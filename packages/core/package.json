@@ -1,0 +1,21 @@
+{
+  "name": "@pp-tracker-client/core",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsc -w",
+    "test:watch": "vitest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "5.3.3"
+  },
+  "devDependencies": {
+    "@pp-tracker-client/config": "workspace:*",
+    "vite-tsconfig-paths": "4.3.1",
+    "vitest": "1.2.2"
+  }
+}
