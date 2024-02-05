@@ -222,7 +222,7 @@ the page is loaded. Used to connect future events with the last page view.
 goal has been reached and tracks its conversion. Accepts either Goal UUID or legacy integer Goal ID.
 Value 0 is reserved for E-commerce cart tracking.
 */
-  idgoal: string;
+  idgoal: string | number;
 
   /**number  Example:  revenue=4.99Revenue value of achieved goal. Currency of the value does not
 matter, but only one should be used by the application (e.g. USD).
@@ -596,7 +596,12 @@ export type TrackerApiClient = {
     keyword: string;
     category?: string | string[];
     searchCount?: number;
-    dimensions: Dimensions;
+    dimensions?: Dimensions;
+  }) => unknown;
+  trackGoal: (props: {
+    goalId: number | string;
+    conversionValue?: number;
+    dimensions?: Dimensions;
   }) => unknown;
 };
 
@@ -657,6 +662,16 @@ export function TrackerApiClient(
         }),
         dimensions,
       }),
+
+    trackGoal: ({ goalId, conversionValue, dimensions }) => {
+      send({
+        idgoal: goalId,
+        ...removeEmptyEntries({
+          conversionValue,
+        }),
+        dimensions,
+      });
+    },
   };
 }
 

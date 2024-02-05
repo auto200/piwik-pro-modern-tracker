@@ -17,6 +17,11 @@ export type TrackerService = {
     searchCount?: number;
     dimensions: Dimensions;
   }) => unknown;
+  trackGoal: (props: {
+    goalId: number | string;
+    conversionValue?: number;
+    dimensions?: Dimensions;
+  }) => unknown;
 };
 
 export function TrackerService(trackerApiClient: TrackerApiClient): TrackerService {
@@ -26,5 +31,7 @@ export function TrackerService(trackerApiClient: TrackerApiClient): TrackerServi
     trackEvent: (props) => trackerApiClient.trackEvent(props),
 
     trackSiteSearch: (props) => trackerApiClient.trackSiteSearch(props),
+
+    trackGoal: (props) => trackerApiClient.trackGoal(props),
   };
 }
