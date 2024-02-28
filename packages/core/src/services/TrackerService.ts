@@ -1,8 +1,9 @@
-import { TrackerApiClient } from './TrackerApiClient';
-
-type Dimensions = Record<number, string>;
+import { Dimensions } from '../types';
+import { SendPayload, TrackerApiClient } from './TrackerApiClient';
 
 export type TrackerService = {
+  send: (data: SendPayload) => unknown;
+  sendBatch: (data: SendPayload[]) => unknown;
   trackPageView: (customTitle?: string) => unknown;
   trackEvent: (props: {
     category: string;
@@ -26,6 +27,9 @@ export type TrackerService = {
 
 export function TrackerService(trackerApiClient: TrackerApiClient): TrackerService {
   return {
+    send: (data) => trackerApiClient.send(data),
+    sendBatch: (data) => trackerApiClient.sendBatch(data),
+
     trackPageView: (customTitle) => trackerApiClient.trackPageView(customTitle || document.title),
 
     trackEvent: (props) => trackerApiClient.trackEvent(props),

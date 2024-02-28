@@ -1,6 +1,7 @@
 import { describe, test, vi, expect, afterEach } from 'vitest';
-import { Dimensions, SendPayload, TrackerApiClient, mapDimensions } from '.';
+import { SendPayload, TrackerApiClient, mapDimensions } from '.';
 import { HttpService } from '../HttpService';
+import { Dimensions } from '../../types';
 
 const BASE_URL = 'http://test.piwik.pro';
 const SITE_ID = '69420fcd-c059-4d92-8480-dde3ed465ed1';

@@ -1,3 +1,4 @@
+import { Dimensions } from '../../types';
 import { removeEmptyEntries, toArray } from '../../utils';
 import { HttpService, paramsToQueryString } from '../HttpService';
 
@@ -227,13 +228,13 @@ Value 0 is reserved for E-commerce cart tracking.
   /**number  Example:  revenue=4.99Revenue value of achieved goal. Currency of the value does not
 matter, but only one should be used by the application (e.g. USD).
 */
-  revenue: string;
+  revenue: string | number;
 
   /**string Enum: "order" "cart-update" "product-detail-view" "add-to-cart" "remove-from-cart"
 Example:  e_t=add-to-cartType of event in tracking request. Used for some event types. Decides how
 other parameters will be interpreted.
    */
-  e_t: string;
+  e_t: 'order' | 'cart-update' | 'product-detail-view' | 'add-to-cart' | 'remove-from-cart';
 
   /**string  Example:  ec_id=order-123%20customer-321E-commerce order ID. Decoded value: order-123
 customer-321
@@ -289,22 +290,22 @@ contain more than 100 products.
   /**number  Example:  ec_st=4.99E-commerce order sub-total (order cost without shipping). Currency
 of the value does not matter, but only one should be used by the application (e.g. USD).
 */
-  ec_st: string;
+  ec_st: string | number;
 
   /**number  Example:  ec_tx=4.99E-commerce order tax. Currency of the value does not matter, but
 only one should be used by the application (e.g. USD).
 */
-  ec_tx: string;
+  ec_tx: string | number;
 
   /**number  Example:  ec_sh=4.99E-commerce order shipping. Currency of the value does not matter,
 but only one should be used by the application (e.g. USD).
 */
-  ec_sh: string;
+  ec_sh: string | number;
 
   /**number  Example:  ec_dt=4.99E-commerce order discount. Currency of the value does not matter,
 but only one should be used by the application (e.g. USD).
 */
-  ec_dt: string;
+  ec_dt: string | number;
 
   /**integer <UNIX timestamp>   Example:  _ects=1521232150Time of the last E-commerce order in UNIX
 timestamp format (number of seconds since 1970-01-01).
@@ -576,8 +577,6 @@ current value from the Privacy tab in global or app settings.
    */
   rmip: 0 | 1;
 }>;
-
-export type Dimensions = Record<number, string>;
 
 export type SendPayload = TrackingData & { dimensions?: Dimensions };
 

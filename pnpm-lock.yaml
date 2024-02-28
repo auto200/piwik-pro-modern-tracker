@@ -20,6 +20,9 @@ importers:
       '@pp-tracker-client/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@pp-tracker-client/ecommerce':
+        specifier: workspace:*
+        version: link:../../packages/ecommerce
       valibot:
         specifier: 0.27.1
         version: 0.27.1
@@ -48,6 +51,25 @@ importers:
 
   packages/core:
     dependencies:
+      typescript:
+        specifier: 5.3.3
+        version: 5.3.3
+    devDependencies:
+      '@pp-tracker-client/config':
+        specifier: workspace:*
+        version: link:../config
+      vite-tsconfig-paths:
+        specifier: 4.3.1
+        version: 4.3.1(typescript@5.3.3)
+      vitest:
+        specifier: 1.2.2
+        version: 1.2.2
+
+  packages/ecommerce:
+    dependencies:
+      '@pp-tracker-client/core':
+        specifier: workspace:*
+        version: link:../core
       typescript:
         specifier: 5.3.3
         version: 5.3.3

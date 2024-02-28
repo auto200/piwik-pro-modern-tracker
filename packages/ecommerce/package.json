@@ -1,5 +1,5 @@
 {
-  "name": "@pp-tracker-client/core",
+  "name": "@pp-tracker-client/ecommerce",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@pp-tracker-client/core": "workspace:*",
     "typescript": "5.3.3"
   },
   "devDependencies": {

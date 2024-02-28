@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@pp-tracker-client/core": "workspace:*",
+    "@pp-tracker-client/ecommerce": "workspace:*",
     "valibot": "0.27.1"
   }
 }
