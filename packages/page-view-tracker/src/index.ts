@@ -1,4 +1,4 @@
-import { type TrackerService } from '@pp-tracker-client/core';
+import { Dimensions, type TrackerService } from '@pp-tracker-client/core';
 
 export type PageViewsTracker = {
   trackPageView: TrackerService['trackPageView'];
@@ -15,11 +15,11 @@ export function PageViewsTracker(
   let lastTrackedPageURL = '';
 
   for (const method of ['pushState', 'replaceState'] as const) {
-    window.history[method] = new Proxy(history[method], {
+    history[method] = new Proxy(history[method], {
       apply: (target, thisArg, argArray: Parameters<History[typeof method]>) => {
         if (!isEnabled) return;
 
-        const href = window.location.href;
+        const href = location.href;
         if (href !== lastTrackedPageURL) {
           tracker.trackPageView({ title: document.title, url: href });
           lastTrackedPageURL = href;
@@ -33,7 +33,10 @@ export function PageViewsTracker(
   return {
     isEnabled,
 
-    trackPageView: tracker.trackPageView,
+    trackPageView: (props?: { title: string; url: string; dimensions?: Dimensions }) => {
+      const { title = document.title, url = location.href, dimensions } = props || {};
+      tracker.trackPageView({ title, url, dimensions });
+    },
 
     enable: () => (isEnabled = true),
 
