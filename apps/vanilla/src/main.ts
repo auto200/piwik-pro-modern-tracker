@@ -3,6 +3,7 @@ import typescriptLogo from './typescript.svg';
 import viteLogo from '/vite.svg';
 import { createTracker } from '@pp-tracker-client/core';
 import { Ecommerce, Product } from '@pp-tracker-client/ecommerce';
+import { PageViewsTracker } from '@pp-tracker-client/page-view-tracker';
 import { config } from './config';
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
@@ -29,8 +30,12 @@ const ecommerce = Ecommerce(tracker);
 
 const products: Product[] = [{ sku: 'qwe', brand: 'mcd', quantity: 123 }];
 
-ecommerce.ecommerceProductDetailView(products);
-ecommerce.ecommerceAddToCart(products);
-ecommerce.ecommerceRemoveFromCart(products);
-ecommerce.ecommerceCartUpdate(products, 123);
-ecommerce.ecommerceOrder(products, { orderId: 231 });
+// ecommerce.ecommerceProductDetailView(products);
+// ecommerce.ecommerceAddToCart(products);
+// ecommerce.ecommerceRemoveFromCart(products);
+// ecommerce.ecommerceCartUpdate(products, 123);
+// ecommerce.ecommerceOrder(products, { orderId: 231 });
+
+const pageViewsTracker = PageViewsTracker(tracker);
+
+pageViewsTracker.enable();

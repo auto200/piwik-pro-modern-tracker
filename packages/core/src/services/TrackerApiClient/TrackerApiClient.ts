@@ -579,11 +579,11 @@ current value from the Privacy tab in global or app settings.
 }>;
 
 export type SendPayload = TrackingData & { dimensions?: Dimensions };
-
+type TrackPageViewProps = { title: string; url: string; dimensions?: Dimensions };
 export type TrackerApiClient = {
   send: (data: SendPayload) => unknown;
   sendBatch: (data: SendPayload[]) => unknown;
-  trackPageView: (customPageTitle: string) => unknown;
+  trackPageView: (props: TrackPageViewProps) => unknown;
   trackEvent: (props: {
     category: string;
     action: string;
@@ -604,7 +604,7 @@ export type TrackerApiClient = {
   }) => unknown;
 };
 
-// Tracker responds only with two status codes:
+// Tracker API responds only with two status codes:
 // 202 Request accepted waiting for processing
 // and
 // 400 Bad Request
@@ -642,7 +642,7 @@ export function TrackerApiClient(
     send,
     sendBatch,
 
-    trackPageView: (customPageTitle) => send({ action_name: customPageTitle }),
+    trackPageView: ({ title, url, dimensions }) => send({ action_name: title, url, dimensions }),
 
     trackEvent: ({ action, category, dimensions, name, value }) =>
       send({
