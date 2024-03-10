@@ -5,10 +5,14 @@ import './index.css';
 import { createBrowserRouter, RouterProvider, Link } from 'react-router-dom';
 import { createTracker } from '@pp-tracker-client/core';
 import { PageViewsTracker } from '@pp-tracker-client/page-view-tracker';
+import { OutlinkTracker } from '@pp-tracker-client/outlink-tracker';
 import { config } from './config.ts';
 
 const tracker = createTracker(config.VITE_TRACKER_BASE_URL, config.VITE_SITE_ID);
 const pageViewsTracker = PageViewsTracker(tracker);
+const outlinkTracker = OutlinkTracker(tracker);
+
+outlinkTracker.enable();
 
 pageViewsTracker.enable();
 // pageViewsTracker.disable();
