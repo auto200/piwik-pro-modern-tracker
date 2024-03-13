@@ -2,7 +2,7 @@ import { Dimensions, type TrackerService } from '@pp-tracker-client/core';
 
 export type PageViewsTracker = {
   trackPageView: TrackerService['trackPageView'];
-  isEnabled: boolean;
+  isEnabled: () => boolean;
   enable: () => void;
   disable: () => void;
 };
@@ -31,7 +31,7 @@ export function PageViewsTracker(
   }
 
   return {
-    isEnabled,
+    isEnabled: () => isEnabled,
 
     trackPageView: (props?: { title: string; url: string; dimensions?: Dimensions }) => {
       const { title = document.title, url = location.href, dimensions } = props || {};

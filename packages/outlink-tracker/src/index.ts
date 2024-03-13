@@ -1,8 +1,4 @@
-import { SendPayload } from '@pp-tracker-client/core';
-
-type ApiClient = {
-  send: (data: SendPayload) => unknown;
-};
+import { TrackerService } from '@pp-tracker-client/core';
 
 export type OutlinkTracker = {
   isEnabled: () => boolean;
@@ -18,14 +14,13 @@ export type OutlinkTrackerConfig = {
   };
 };
 
-export function OutlinkTracker(apiClient: ApiClient): OutlinkTracker {
+export function OutlinkTracker(tracker: TrackerService): OutlinkTracker {
   // presence or absence of click handler determines if the module is enabled or disabled
   let clickHandler: ((ev: MouseEvent) => void) | undefined = undefined;
 
   const createClickHandler = (config: OutlinkTrackerConfig) => {
-    return ({ target, button: clickedButton }: MouseEvent) => {
-      console.log(clickedButton);
-      if (!shouldProcessClick(clickedButton, config.clicks)) return;
+    return ({ target, button: clickedMouseButton }: MouseEvent) => {
+      if (!shouldProcessClick(clickedMouseButton, config.clicks)) return;
 
       if (!target || !(target instanceof Element)) return;
 
@@ -35,7 +30,7 @@ export function OutlinkTracker(apiClient: ApiClient): OutlinkTracker {
       // not an outlink
       if (closestAnchor.hostname === location.hostname) return;
 
-      apiClient.send({ link: closestAnchor.href });
+      tracker.send({ link: closestAnchor.href });
     };
   };
 
@@ -69,8 +64,8 @@ export function OutlinkTracker(apiClient: ApiClient): OutlinkTracker {
   };
 }
 
-function shouldProcessClick(clickedButton: number, clickConfig: OutlinkTrackerConfig['clicks']) {
-  switch (clickedButton) {
+function shouldProcessClick(mouseButton: number, clickConfig: OutlinkTrackerConfig['clicks']) {
+  switch (mouseButton) {
     case 0: {
       return clickConfig.trackLeftClicks;
     }
