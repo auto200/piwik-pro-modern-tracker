@@ -112,6 +112,31 @@ importers:
 
   packages/content-interaction:
     dependencies:
+      '@pp-tracker-client/content-tracking-utils':
+        specifier: workspace:*
+        version: link:../content-tracking-utils
+      '@pp-tracker-client/core':
+        specifier: workspace:*
+        version: link:../core
+      typescript:
+        specifier: 5.3.3
+        version: 5.3.3
+    devDependencies:
+      '@pp-tracker-client/config':
+        specifier: workspace:*
+        version: link:../config
+      happy-dom:
+        specifier: 13.7.3
+        version: 13.7.3
+      vite-tsconfig-paths:
+        specifier: 4.3.1
+        version: 4.3.1(typescript@5.3.3)
+      vitest:
+        specifier: 1.2.2
+        version: 1.2.2(happy-dom@13.7.3)
+
+  packages/content-tracking-utils:
+    dependencies:
       '@pp-tracker-client/core':
         specifier: workspace:*
         version: link:../core
