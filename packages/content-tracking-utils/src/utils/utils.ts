@@ -22,16 +22,6 @@ export const CONTENT = {
   },
 } as const;
 
-/**
- * Find content parent form clicked element
- */
-export function findContentParentFromClickedElement(clickedElement: Element) {
-  return (
-    clickedElement.closest(`[${CONTENT.PARENT.ATTR}]`) ||
-    clickedElement.closest(`.${CONTENT.PARENT.CLASS}`)
-  );
-}
-
 export function findContentName(contentParent: Element) {
   const nameNode = findFirstElementWithAttribute(contentParent, CONTENT.NAME.ATTR);
 

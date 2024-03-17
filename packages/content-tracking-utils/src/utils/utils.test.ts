@@ -4,7 +4,6 @@ import {
   CONTENT,
   buildContentBlock,
   findContentName,
-  findContentParentFromClickedElement,
   findContentPiece,
   findContentTarget,
 } from './utils';
@@ -20,18 +19,6 @@ describe('content interaction utils', () => {
             </div>
             `;
     document.documentElement.innerHTML = baseTemplate;
-  });
-
-  describe('finding content parent from within parent', () => {
-    test('should not find content parent', () => {
-      document.documentElement.innerHTML = '';
-      expect(findContentParentFromClickedElement(document.documentElement)).toBeNull();
-    });
-
-    test('should find content parent', () => {
-      const img = document.querySelector('#img')!;
-      expect(findContentParentFromClickedElement(img)!.id).toEqual('content-parent');
-    });
   });
 
   describe('finding content name', () => {

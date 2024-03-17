@@ -2,9 +2,11 @@
   "name": "@pp-tracker-client/outlink-tracker",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsc -w",
+    "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
   },

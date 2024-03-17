@@ -1,6 +1,1 @@
-export {
-  findContentParentFromClickedElement,
-  buildContentBlock,
-  CONTENT,
-  type ContentBlock,
-} from './utils';
+export { buildContentBlock, CONTENT, type ContentBlock } from './utils';

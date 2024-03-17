@@ -1,9 +1,6 @@
 import { TrackerService } from '@pp-tracker-client/core';
-import {
-  findContentParentFromClickedElement,
-  buildContentBlock,
-  ContentBlock,
-} from '@pp-tracker-client/content-tracking-utils';
+import { buildContentBlock, ContentBlock } from '@pp-tracker-client/content-tracking-utils';
+import { findContentParentFromClickedElement } from './utils';
 
 export type ContentInteraction = {
   isEnabled: () => boolean;
