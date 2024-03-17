@@ -2,20 +2,18 @@ import { TrackerService } from '@pp-tracker-client/core';
 import {
   findContentParentFromClickedElement,
   buildContentBlock,
+  ContentBlock,
 } from '@pp-tracker-client/content-tracking-utils';
 
 export type ContentInteraction = {
   isEnabled: () => boolean;
   enable: () => void;
   disable: () => void;
-  trackContentInteraction: (params: TrackContentInteractionParams) => unknown;
+  trackContentInteraction: (interaction: Interaction) => unknown;
 };
 
-type TrackContentInteractionParams = {
-  contentInteraction: string;
-  contentName: string;
-  contentPiece: string;
-  contentTarget: string;
+export type Interaction = ContentBlock & {
+  interaction: string;
 };
 
 export function ContentInteraction(tracker: TrackerService): ContentInteraction {
@@ -30,19 +28,19 @@ export function ContentInteraction(tracker: TrackerService): ContentInteraction 
     const contentBlock = buildContentBlock(contentParent);
 
     trackContentInteraction({
-      contentInteraction: 'click',
-      contentName: contentBlock.name,
-      contentPiece: contentBlock.piece,
-      contentTarget: contentBlock.target,
+      interaction: 'click',
+      name: contentBlock.name,
+      piece: contentBlock.piece,
+      target: contentBlock.target,
     });
   };
 
-  const trackContentInteraction = (params: TrackContentInteractionParams) => {
+  const trackContentInteraction = ({ interaction, name, piece, target }: Interaction) => {
     return tracker.send({
-      c_i: params.contentInteraction,
-      c_n: params.contentName,
-      c_p: params.contentPiece,
-      c_t: params.contentTarget,
+      c_i: interaction,
+      c_n: name,
+      c_p: piece,
+      c_t: target,
     });
   };
 

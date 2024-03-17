@@ -58,7 +58,13 @@ export function findContentTarget(contentParent: Element) {
   // TODO: find content target by class and extract url
 }
 
-export function buildContentBlock(contentParent: Element) {
+export type ContentBlock = {
+  name: string;
+  piece: string;
+  target: string;
+};
+
+export function buildContentBlock(contentParent: Element): ContentBlock {
   const name = findContentName(contentParent);
   const piece = findContentPiece(contentParent);
   const target = findContentTarget(contentParent);
