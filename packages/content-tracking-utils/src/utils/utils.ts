@@ -25,7 +25,7 @@ export const CONTENT = {
 /**
  * Find content parent form clicked element
  */
-export function findContentParent(clickedElement: Element) {
+export function findContentParentFromClickedElement(clickedElement: Element) {
   return (
     clickedElement.closest(`[${CONTENT.PARENT.ATTR}]`) ||
     clickedElement.closest(`.${CONTENT.PARENT.CLASS}`)

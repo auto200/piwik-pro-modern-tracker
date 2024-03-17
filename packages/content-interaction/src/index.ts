@@ -1,5 +1,8 @@
 import { TrackerService } from '@pp-tracker-client/core';
-import { findContentParent, buildContentBlock } from '@pp-tracker-client/content-tracking-utils';
+import {
+  findContentParentFromClickedElement,
+  buildContentBlock,
+} from '@pp-tracker-client/content-tracking-utils';
 
 export type ContentInteraction = {
   isEnabled: () => boolean;
@@ -21,7 +24,7 @@ export function ContentInteraction(tracker: TrackerService): ContentInteraction 
   const clickHandler = ({ target: clickedElement }: MouseEvent) => {
     if (!clickedElement || !(clickedElement instanceof Element)) return;
 
-    const contentParent = findContentParent(clickedElement);
+    const contentParent = findContentParentFromClickedElement(clickedElement);
     if (!contentParent) return;
 
     const contentBlock = buildContentBlock(contentParent);

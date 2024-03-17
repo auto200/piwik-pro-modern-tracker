@@ -1,1 +1,1 @@
-export { findContentParent, buildContentBlock, CONTENT } from './utils';
+export { findContentParentFromClickedElement, buildContentBlock, CONTENT } from './utils';
