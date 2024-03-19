@@ -1,0 +1,27 @@
+{
+  "name": "@pp-tracker-client/content-impression",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsc -w",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@pp-tracker-client/content-tracking-utils": "workspace:*",
+    "@pp-tracker-client/core": "workspace:*",
+    "typescript": "5.3.3"
+  },
+  "devDependencies": {
+    "@pp-tracker-client/config": "workspace:*",
+    "happy-dom": "13.7.3",
+    "vite-tsconfig-paths": "4.3.1",
+    "vitest": "1.2.2"
+  }
+}

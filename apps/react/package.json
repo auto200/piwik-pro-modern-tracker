@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@pp-tracker-client/content-impression": "workspace:*",
     "@pp-tracker-client/content-interaction": "workspace:*",
     "@pp-tracker-client/core": "workspace:*",
     "@pp-tracker-client/outlink-tracker": "workspace:*",

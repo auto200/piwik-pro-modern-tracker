@@ -7,12 +7,16 @@ import { createTracker } from '@pp-tracker-client/core';
 import { PageViewsTracker } from '@pp-tracker-client/page-view-tracker';
 import { OutlinkTracker } from '@pp-tracker-client/outlink-tracker';
 import { ContentInteraction } from '@pp-tracker-client/content-interaction';
+import { ContentImpression } from '@pp-tracker-client/content-impression';
 import { config } from './config.ts';
 
 const tracker = createTracker(config.VITE_TRACKER_BASE_URL, config.VITE_SITE_ID);
 const pageViewsTracker = PageViewsTracker(tracker);
 const outlinkTracker = OutlinkTracker(tracker);
 const contentInteraction = ContentInteraction(tracker);
+const contentImpression = ContentImpression(tracker);
+
+contentImpression.enable();
 
 contentInteraction.enable();
 
@@ -24,7 +28,12 @@ pageViewsTracker.enable();
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Link to="/asd">to /asd</Link>,
+    element: (
+      <>
+        <App />
+        <Link to="/asd">to /asd</Link>
+      </>
+    ),
   },
   {
     path: '/asd',
@@ -38,8 +47,6 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <App />
-
     <RouterProvider router={router} />
   </React.StrictMode>
 );
