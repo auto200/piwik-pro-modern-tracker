@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
-    "dev": "turbo dev --concurrency 11",
+    "dev": "turbo dev --parallel",
     "test": "turbo test",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",

@@ -1,0 +1,32 @@
+{
+  "name": "@pp-tracker-client/error-tracking",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "rollup -c -w",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@pp-tracker-client/core": "workspace:*",
+    "error-stack-parser": "2.1.4"
+  },
+  "devDependencies": {
+    "@pp-tracker-client/config": "workspace:*",
+    "@rollup/plugin-commonjs": "25.0.7",
+    "@rollup/plugin-node-resolve": "15.2.3",
+    "@rollup/plugin-typescript": "11.1.6",
+    "happy-dom": "13.7.3",
+    "rollup": "4.13.0",
+    "tslib": "2.6.2",
+    "typescript": "5.3.3",
+    "vite-tsconfig-paths": "4.3.1",
+    "vitest": "1.2.2"
+  }
+}

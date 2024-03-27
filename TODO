@@ -1,0 +1,21 @@
+tracker-core
+- custom dimensions
+- user management
+- ping
+
+outlink-tracker
+- downloads
+- ignore classes
+- cross domain linking
+
+page view tracking
+- get number of tracked pages
+
+cookie management - not sure where to put it yet
+
+performance tracking
+
+heartbeat
+
+error tracker
+- option to track only unique errors

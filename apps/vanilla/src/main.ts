@@ -2,8 +2,9 @@ import './style.css';
 import typescriptLogo from './typescript.svg';
 import viteLogo from '/vite.svg';
 import { createTracker } from '@pp-tracker-client/core';
-import { Ecommerce, Product } from '@pp-tracker-client/ecommerce';
-import { PageViewsTracker } from '@pp-tracker-client/page-view-tracker';
+// import { Ecommerce, Product } from '@pp-tracker-client/ecommerce';
+// import { PageViewsTracker } from '@pp-tracker-client/page-view-tracker';
+import { ErrorTracking } from '@pp-tracker-client/error-tracking';
 import { config } from './config';
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
@@ -26,9 +27,14 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 
 const tracker = createTracker(config.VITE_TRACKER_BASE_URL, config.VITE_SITE_ID);
 
-const ecommerce = Ecommerce(tracker);
+const errorTracking = ErrorTracking(tracker);
+// errorTracking.trackError(new Error('xd'));
+errorTracking.enable();
+throw new Error('error xddd');
 
-const products: Product[] = [{ sku: 'qwe', brand: 'mcd', quantity: 123 }];
+// const ecommerce = Ecommerce(tracker);
+
+// const products: Product[] = [{ sku: 'qwe', brand: 'mcd', quantity: 123 }];
 
 // ecommerce.ecommerceProductDetailView(products);
 // ecommerce.ecommerceAddToCart(products);
@@ -36,6 +42,6 @@ const products: Product[] = [{ sku: 'qwe', brand: 'mcd', quantity: 123 }];
 // ecommerce.ecommerceCartUpdate(products, 123);
 // ecommerce.ecommerceOrder(products, { orderId: 231 });
 
-const pageViewsTracker = PageViewsTracker(tracker);
+// const pageViewsTracker = PageViewsTracker(tracker);
 
-pageViewsTracker.enable();
+// pageViewsTracker.enable();
