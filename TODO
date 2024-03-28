@@ -8,9 +8,6 @@ outlink-tracker
 - ignore classes
 - cross domain linking
 
-page view tracking
-- get number of tracked pages
-
 cookie management - not sure where to put it yet
 
 performance tracking

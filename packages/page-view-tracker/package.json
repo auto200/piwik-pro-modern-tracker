@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@pp-tracker-client/config": "workspace:*",
+    "happy-dom": "13.7.3",
     "vite-tsconfig-paths": "4.3.1",
     "vitest": "1.2.2"
   }
