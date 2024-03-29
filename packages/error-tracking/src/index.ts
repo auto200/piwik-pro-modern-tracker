@@ -32,20 +32,24 @@ export function ErrorTracking(tracker: TrackerService): ErrorTracking {
 
   const errorHandler = (event: ErrorEvent) => trackError(event.error);
 
+  const disable = () => {
+    if (!isEnabled) return;
+
+    window.removeEventListener('error', errorHandler);
+    isEnabled = false;
+  };
+
   return {
     isEnabled: () => isEnabled,
 
     enable: () => {
-      window.addEventListener('error', errorHandler, true);
+      disable();
 
+      window.addEventListener('error', errorHandler, true);
       isEnabled = true;
     },
 
-    disable: () => {
-      window.removeEventListener('error', errorHandler);
-
-      isEnabled = false;
-    },
+    disable,
 
     trackError,
   };
