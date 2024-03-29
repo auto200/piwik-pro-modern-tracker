@@ -1,5 +1,5 @@
 import { TrackerService } from '@pp-tracker-client/core';
-import { PageViewsTracker } from 'index';
+import { PageViewsTracker } from './index';
 import { expect, test, vi } from 'vitest';
 
 test('getNumTrackedPageViews', () => {

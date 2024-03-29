@@ -1,5 +1,5 @@
 import { TrackerService } from '@pp-tracker-client/core';
-import { ErrorTracking } from 'index';
+import { ErrorTracking } from './index';
 import { describe, test, expect, vi, afterEach } from 'vitest';
 
 describe('error tracking', () => {
