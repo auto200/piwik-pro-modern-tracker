@@ -1,5 +1,5 @@
 import { Dimensions } from '../../types';
-import { removeEmptyEntries, toArray } from '../../utils';
+import { PingLevel, removeEmptyEntries, toArray } from '../../utils';
 import { HttpService, paramsToQueryString } from '../HttpService';
 
 export type TrackingData = Partial<{
@@ -602,6 +602,7 @@ export type TrackerApiClient = {
     conversionValue?: number;
     dimensions?: Dimensions;
   }) => unknown;
+  ping: (level: PingLevel) => unknown;
 };
 
 // Tracker API responds only with two status codes:
@@ -662,15 +663,19 @@ export function TrackerApiClient(
         dimensions,
       }),
 
-    trackGoal: ({ goalId, conversionValue, dimensions }) => {
+    trackGoal: ({ goalId, conversionValue, dimensions }) =>
       send({
         idgoal: goalId,
         ...removeEmptyEntries({
           conversionValue,
         }),
         dimensions,
-      });
-    },
+      }),
+
+    ping: (level) =>
+      send({
+        ping: level.toString(),
+      }),
   };
 }
 

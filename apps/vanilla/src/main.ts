@@ -30,7 +30,9 @@ const tracker = createTracker(config.VITE_TRACKER_BASE_URL, config.VITE_SITE_ID)
 const errorTracking = ErrorTracking(tracker);
 // errorTracking.trackError(new Error('xd'));
 errorTracking.enable();
-throw new Error('error xddd');
+// throw new Error('error xddd');
+
+tracker.ping();
 
 // const ecommerce = Ecommerce(tracker);
 

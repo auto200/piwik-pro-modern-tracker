@@ -23,3 +23,12 @@ export function isArray<T>(input: T | T[]): input is T[] {
 type WithoutNullableKeys<Type> = {
   [Key in keyof Type]-?: WithoutNullableKeys<NonNullable<Type[Key]>>;
 };
+
+export enum PingLevel {
+  PeriodicHeartbeat = 1,
+  LastHeartbeat = 2,
+  BlurHeartbeat = 3,
+  Deanonymize = 4,
+  PerformanceMetrics = 5,
+  OnDemand = 6,
+}

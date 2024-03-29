@@ -1,3 +1,4 @@
+import { PingLevel } from '../utils';
 import { Dimensions } from '../types';
 import { SendPayload, TrackerApiClient } from './TrackerApiClient';
 
@@ -25,6 +26,7 @@ export type TrackerService = {
     conversionValue?: number;
     dimensions?: Dimensions;
   }) => unknown;
+  ping: (level?: PingLevel) => unknown;
 };
 
 export function TrackerService(trackerApiClient: TrackerApiClient): TrackerService {
@@ -41,5 +43,9 @@ export function TrackerService(trackerApiClient: TrackerApiClient): TrackerServi
     trackSiteSearch: (props) => trackerApiClient.trackSiteSearch(props),
 
     trackGoal: (props) => trackerApiClient.trackGoal(props),
+
+    ping: (level = PingLevel.OnDemand) => {
+      trackerApiClient.ping(level);
+    },
   };
 }
