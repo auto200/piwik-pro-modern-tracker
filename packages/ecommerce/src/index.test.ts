@@ -1,4 +1,4 @@
-import { parseProducts, Product } from 'index';
+import { parseProducts, Product } from './index';
 import { describe, test, expect } from 'vitest';
 
 describe('parsing product object to array', () => {

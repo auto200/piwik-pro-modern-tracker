@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
+    "build:packages": "turbo build --filter=./packages/*",
     "dev": "turbo dev --parallel",
     "test": "turbo test",
     "lint": "turbo lint",
@@ -13,9 +14,9 @@
     "clean": "pnpm clean:dist && pnpm clean:node-modules"
   },
   "devDependencies": {
-    "prettier": "3.1.1",
+    "prettier": "3.2.5",
     "rimraf": "5.0.5",
-    "turbo": "1.11.3"
+    "turbo": "1.13.2"
   },
   "packageManager": "pnpm@8.9.0",
   "engines": {

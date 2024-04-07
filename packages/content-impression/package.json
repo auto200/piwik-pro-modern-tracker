@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsc -w",
+    "build": "tsc",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
