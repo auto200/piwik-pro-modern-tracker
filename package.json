@@ -10,12 +10,15 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "clean:dist": "rimraf -g packages/*/dist && rimraf -g apps/*/dist",
     "clean:node-modules": "rimraf -g packages/*/node_modules && rimraf -g apps/*/node_modules",
-    "clean": "pnpm clean:dist && pnpm clean:node-modules"
+    "clean": "pnpm clean:dist && pnpm clean:node-modules",
+    "docs-all": "typedoc --plugin typedoc-plugin-markdown"
   },
   "devDependencies": {
     "prettier": "3.1.1",
     "rimraf": "5.0.5",
-    "turbo": "1.11.3"
+    "turbo": "1.11.3",
+    "typedoc": "0.25.12",
+    "typedoc-plugin-markdown": "3.17.1"
   },
   "packageManager": "pnpm@8.9.0",
   "engines": {
