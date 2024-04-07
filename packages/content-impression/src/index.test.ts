@@ -1,6 +1,6 @@
 import { CONTENT } from '@pp-tracker-client/content-tracking-utils';
 import { TrackerService } from '@pp-tracker-client/core';
-import { ContentImpression } from 'index';
+import { ContentImpression } from './index';
 import { expect, test, describe, vi } from 'vitest';
 
 describe('content impressions', () => {
