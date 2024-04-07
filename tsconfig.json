@@ -1,0 +1,16 @@
+{
+    "references": [
+        {
+            "path": "./packages/content-impression"
+        },
+        {
+            "path": "./packages/content-interaction"
+        },
+        {
+            "path": "./packages/content-tracking-utils"
+        },
+        {
+            "path": "./packages/core"
+        },
+    ]
+}
