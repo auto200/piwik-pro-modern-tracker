@@ -579,7 +579,12 @@ current value from the Privacy tab in global or app settings.
 }>;
 
 export type SendPayload = TrackingData & { dimensions?: Dimensions };
-type TrackPageViewProps = { title: string; url: string; dimensions?: Dimensions };
+type TrackPageViewProps = {
+  title: string;
+  url: string;
+  dimensions?: Dimensions;
+  pageViewId?: string;
+};
 export type TrackerApiClient = {
   send: (data: SendPayload) => unknown;
   sendBatch: (data: SendPayload[]) => unknown;
@@ -643,7 +648,8 @@ export function TrackerApiClient(
     send,
     sendBatch,
 
-    trackPageView: ({ title, url, dimensions }) => send({ action_name: title, url, dimensions }),
+    trackPageView: ({ title, url, dimensions, pageViewId }) =>
+      send({ action_name: title, url, dimensions, ...removeEmptyEntries({ pv_id: pageViewId }) }),
 
     trackEvent: ({ action, category, dimensions, name, value }) =>
       send({

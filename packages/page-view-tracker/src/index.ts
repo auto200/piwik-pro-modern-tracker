@@ -17,6 +17,7 @@ export function PageViewsTracker(
   let isEnabled = false;
   let lastTrackedPageURL = '';
   let trackedPageViews = 0;
+  let idPageView = '';
 
   for (const method of ['pushState', 'replaceState'] as const) {
     history[method] = new Proxy(history[method], {
@@ -35,8 +36,11 @@ export function PageViewsTracker(
   }
 
   const trackPageView = (props?: TrackPageViewProps) => {
+    idPageView = crypto.randomUUID().substring(0, 6);
+
     const { title = document.title, url = location.href, dimensions } = props || {};
-    tracker.trackPageView({ title, url, dimensions });
+    tracker.trackPageView({ title, url, dimensions, pageViewId: idPageView });
+
     trackedPageViews++;
   };
 

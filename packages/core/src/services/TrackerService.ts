@@ -2,7 +2,12 @@ import { PingLevel } from '../utils';
 import { Dimensions } from '../types';
 import { SendPayload, TrackerApiClient } from './TrackerApiClient';
 
-type TrackPageViewProps = { title: string; url: string; dimensions?: Dimensions };
+type TrackPageViewProps = {
+  title: string;
+  url: string;
+  dimensions?: Dimensions;
+  pageViewId?: string;
+};
 
 export type TrackerService = {
   send: (data: SendPayload) => unknown;
