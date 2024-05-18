@@ -1,7 +1,7 @@
 import './style.css';
 import typescriptLogo from './typescript.svg';
 import viteLogo from '/vite.svg';
-import { createTracker } from '@pp-tracker-client/core';
+import { TrackerService } from '@pp-tracker-client/core';
 // import { Ecommerce, Product } from '@pp-tracker-client/ecommerce';
 // import { PageViewsTracker } from '@pp-tracker-client/page-view-tracker';
 import { ErrorTracking } from '@pp-tracker-client/error-tracking';
@@ -25,7 +25,10 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   </div>
 `;
 
-const tracker = createTracker(config.VITE_TRACKER_BASE_URL, config.VITE_SITE_ID);
+const tracker = TrackerService({
+  baseUrl: config.VITE_TRACKER_BASE_URL,
+  siteId: config.VITE_SITE_ID,
+});
 
 const errorTracking = ErrorTracking(tracker);
 // errorTracking.trackError(new Error('xd'));

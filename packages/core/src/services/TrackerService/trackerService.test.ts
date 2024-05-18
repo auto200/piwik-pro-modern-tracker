@@ -1,18 +1,23 @@
 import { describe, test, vi, expect, afterEach } from 'vitest';
-import { SendPayload, TrackerApiClient, mapDimensions } from '.';
+import { SendPayload, mapDimensions, TrackerService, TrackerServices } from './TrackerService';
 import { HttpService } from '../HttpService';
 import { Dimensions } from '../../types';
+import { GlobalDimensions } from '../GlobalDimensions';
 
 const BASE_URL = 'http://test.piwik.pro';
 const SITE_ID = '69420fcd-c059-4d92-8480-dde3ed465ed1';
 
 const mockFetch = vi.fn();
 mockFetch.mockResolvedValue({ status: 202 });
-const mockHttp = HttpService(mockFetch);
-const trackerApiClient = TrackerApiClient(mockHttp, BASE_URL, SITE_ID);
+const mockServices: TrackerServices = {
+  globalDimensions: GlobalDimensions(),
+  http: HttpService(mockFetch),
+};
+const tracker = TrackerService({ baseUrl: BASE_URL, siteId: SITE_ID }, mockServices);
 
 afterEach(() => {
   mockFetch.mockClear();
+  mockServices.globalDimensions.clearAll();
 });
 
 function calledWith(params: string) {
@@ -22,16 +27,16 @@ function calledWith(params: string) {
   );
 }
 
-describe('TrackerApiClient', () => {
+describe('TrackerService', () => {
   test('sending get request', () => {
     const payload: SendPayload = { rec: 1, dimensions: { 1: 'asd', 2: 'qwe' } };
-    trackerApiClient.send(payload);
+    tracker.send(payload);
     calledWith('&rec=1&dimension1=asd&dimension2=qwe');
   });
 
   test('sending post request', () => {
     const payload: SendPayload[] = [{ rec: 1, dimensions: { 1: 'asd', 2: 'qwe' } }];
-    trackerApiClient.sendBatch(payload);
+    tracker.sendBatch(payload);
 
     expect(mockFetch).toHaveBeenCalledWith(
       BASE_URL,
@@ -39,7 +44,16 @@ describe('TrackerApiClient', () => {
         body: '{"requests":["?idsite=69420fcd-c059-4d92-8480-dde3ed465ed1&rec=1&dimension1=asd&dimension2=qwe"]}',
       })
     );
-    // calledWith('&rec=1&dimension1=asd&dimension2=qwe');
+  });
+
+  describe('global dimensions', () => {
+    test('global dimensions should be overridden by call specific ones', () => {
+      tracker.setCustomDimensionValue(1, 'aaa');
+      tracker.setCustomDimensionValue(2, 'aaa');
+      tracker.send({ dimensions: { 1: 'bbb' } });
+
+      calledWith('&rec=1&dimension1=bbb&dimension2=aaa');
+    });
   });
 
   describe('utils', () => {

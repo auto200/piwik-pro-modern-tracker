@@ -1,8 +1,4 @@
-import { Dimensions } from '../../types';
-import { PingLevel, removeEmptyEntries, toArray } from '../../utils';
-import { HttpService, paramsToQueryString } from '../HttpService';
-
-export type TrackingData = Partial<{
+export type TrackingParameters = Partial<{
   /**
    * string &lt;UUID&gt; 36 characters
    *
@@ -35,13 +31,13 @@ export type TrackingData = Partial<{
 
   url: string;
   /**
-   * Example: action_name=help%2Fdelivery%2Fshipping
-
-   * Recommended Name of event. Could be page title or custom-built path expressing the location in
-   * application.
-   *
-   * Decoded value: help/delivery/shipping
-   */
+     * Example: action_name=help%2Fdelivery%2Fshipping
+  
+     * Recommended Name of event. Could be page title or custom-built path expressing the location in
+     * application.
+     *
+     * Decoded value: help/delivery/shipping
+     */
   action_name: string;
 
   /**
@@ -57,45 +53,45 @@ export type TrackingData = Partial<{
    */
   _id: string;
   /**
-   * Example: r=1521232150 Recommended Cache buster.
-
-   * Its value should be unique for every request to make sure that the request is sent to server
-   * and not read from a cache.
-   *
-   * Value can be random or sequential (e.g. UNIX timestamp). It is especially useful if the visitor
-   * is behind some kind of caching proxy.
-   */
+     * Example: r=1521232150 Recommended Cache buster.
+  
+     * Its value should be unique for every request to make sure that the request is sent to server
+     * and not read from a cache.
+     *
+     * Value can be random or sequential (e.g. UNIX timestamp). It is especially useful if the visitor
+     * is behind some kind of caching proxy.
+     */
   r: number;
 
   /**
-   * Example: urlref=http%3A%2F%2Fexample.com%2Fpath%2Fto%2Fprevious%2Fpage.html
-   *
-   * HTTP referrer.
-
-   * The URL of the previous page that linked to current one.
-
-   * IMPORTANT: URL/URI has to have authority or mailto scheme. You can lean more about authority
-   * and scheme [here](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier#Example_URIs).
-
-   * Decoded value: http://example.com/path/to/previous/page.html
-   */
+     * Example: urlref=http%3A%2F%2Fexample.com%2Fpath%2Fto%2Fprevious%2Fpage.html
+     *
+     * HTTP referrer.
+  
+     * The URL of the previous page that linked to current one.
+  
+     * IMPORTANT: URL/URI has to have authority or mailto scheme. You can lean more about authority
+     * and scheme [here](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier#Example_URIs).
+  
+     * Decoded value: http://example.com/path/to/previous/page.html
+     */
   urlref: string;
 
   // TODO: format properly rest of the jsdocs
 
   /**
-   * <JSON>   Example:
-   *cvar=%7B%221%22%3A%5B%22AspectRatio%22%2C%2216%3A9%22%5D%2C%222%22%3A%5B%22Height%22%2C%221080%22%5D%2C%223%22%3A%5B%22Width%22%2C%221920%22%5D%7DCustom
-   
-   *variables set in the event scope. IMPORTANT: value have to be urlencoded in raw URL, below is
-   *decoded JSON, do not use it directly in raw URL. Decoded value:
-
-   *{"1":["AspectRatio","16:9"],"2":["Height","1080"],"3":["Width","1920"]} Format: Object
-   *serialized with JSON:
-   *
-   *key - (string) Custom variable ID value - Array with: (string) Custom variable name, max length:
-   *200 characters (string) Custom variable value, max length: 200 characters
-   */
+     * <JSON>   Example:
+     *cvar=%7B%221%22%3A%5B%22AspectRatio%22%2C%2216%3A9%22%5D%2C%222%22%3A%5B%22Height%22%2C%221080%22%5D%2C%223%22%3A%5B%22Width%22%2C%221920%22%5D%7DCustom
+     
+     *variables set in the event scope. IMPORTANT: value have to be urlencoded in raw URL, below is
+     *decoded JSON, do not use it directly in raw URL. Decoded value:
+  
+     *{"1":["AspectRatio","16:9"],"2":["Height","1080"],"3":["Width","1920"]} Format: Object
+     *serialized with JSON:
+     *
+     *key - (string) Custom variable ID value - Array with: (string) Custom variable name, max length:
+     *200 characters (string) Custom variable value, max length: 200 characters
+     */
   _cvar: string;
 
   /** integer  Example:  _idvc=42 Visit counter. It sets the visit number of the visitor. It should be
@@ -201,115 +197,115 @@ export type TrackingData = Partial<{
   search: string;
 
   /**string <JSON>   Example:
-search_cats=%5B%22Movies%20%26%20TV%22%2C%22Cartoons%22%2C%22Video%20games%22%5DInternal search
-categories. Used for tracking categories the visitor specified during a search in the application.
-See: Site search. IMPORTANT: value have to be urlencoded in raw URL, below is decoded JSON, do not
-use it directly in raw URL. Decoded value: ["Movies & TV","Cartoons","Video games"] Requests with
-this parameter create Search events. The provided value must be a JSON-serialized array of strings.
-*/
+  search_cats=%5B%22Movies%20%26%20TV%22%2C%22Cartoons%22%2C%22Video%20games%22%5DInternal search
+  categories. Used for tracking categories the visitor specified during a search in the application.
+  See: Site search. IMPORTANT: value have to be urlencoded in raw URL, below is decoded JSON, do not
+  use it directly in raw URL. Decoded value: ["Movies & TV","Cartoons","Video games"] Requests with
+  this parameter create Search events. The provided value must be a JSON-serialized array of strings.
+  */
   search_cats: string[];
 
   /**integer  [ 0 .. 4294967295 ]   Example:  search_count=2218Internal search result count. Number
-of results found in a search. See: Site search. Requests with this parameter create Search events.
-*/
+  of results found in a search. See: Site search. Requests with this parameter create Search events.
+  */
   search_count: number;
 
   /**string <hexadecimal>   [ 6 .. 6 ]   Example:  pv_id=ff5c6dUnique page view ID generated when
-the page is loaded. Used to connect future events with the last page view.
-*/
+  the page is loaded. Used to connect future events with the last page view.
+  */
   pv_id: string;
 
   /**string <uuid>   Example:  idgoal=e3554b05-aa7c-4f2e-87f8-043f49a5343eGoal ID. Signifies that a
-goal has been reached and tracks its conversion. Accepts either Goal UUID or legacy integer Goal ID.
-Value 0 is reserved for E-commerce cart tracking.
-*/
+  goal has been reached and tracks its conversion. Accepts either Goal UUID or legacy integer Goal ID.
+  Value 0 is reserved for E-commerce cart tracking.
+  */
   idgoal: string | number;
 
   /**number  Example:  revenue=4.99Revenue value of achieved goal. Currency of the value does not
-matter, but only one should be used by the application (e.g. USD).
-*/
+  matter, but only one should be used by the application (e.g. USD).
+  */
   revenue: string | number;
 
   /**string Enum: "order" "cart-update" "product-detail-view" "add-to-cart" "remove-from-cart"
-Example:  e_t=add-to-cartType of event in tracking request. Used for some event types. Decides how
-other parameters will be interpreted.
-   */
+  Example:  e_t=add-to-cartType of event in tracking request. Used for some event types. Decides how
+  other parameters will be interpreted.
+     */
   e_t: 'order' | 'cart-update' | 'product-detail-view' | 'add-to-cart' | 'remove-from-cart';
 
   /**string  Example:  ec_id=order-123%20customer-321E-commerce order ID. Decoded value: order-123
-customer-321
-*/
+  customer-321
+  */
   ec_id: string;
 
   /**string <JSON>   Example:
-ec_products=%5B%5B%22craft-311%22%2C%22Unicorn%20Iron%20on%20Patch%22%2C%22Crafts%20%26%20Sewing%22%2C4.99%2C3%2C%22FairyTales%22%2C%223-color%20rainbow%22%5D%2C%5B%22craft-312%22%2C%22Unicorn%20Lamp%22%2C%5B%22Crafts%20%26%20Sewing%22%2C%22Lamps%22%5D%2C13.25%2C1%2C%22FairyTales%22%2C%22black-and-white%22%2C%7B%221%22%3A%22custom%20glitter%22%7D%5D%5DContents
-of the E-commerce cart in form of two dimensional, index positioned JSON array. This is NOT an
-assiociative array. IMPORTANT: value have to be urlencoded in raw URL, below is decoded JSON, do not
-use it directly in raw URL. Decoded value: [
-  [
-      "craft-311",
-      "Unicorn Iron on Patch",
-      "Crafts & Sewing",
-      4.99,
-      3,
-      "FairyTales",
-      "3-color rainbow"
-  ],
-  [
-      "craft-312",
-      "Unicorn Lamp",
-      [
+  ec_products=%5B%5B%22craft-311%22%2C%22Unicorn%20Iron%20on%20Patch%22%2C%22Crafts%20%26%20Sewing%22%2C4.99%2C3%2C%22FairyTales%22%2C%223-color%20rainbow%22%5D%2C%5B%22craft-312%22%2C%22Unicorn%20Lamp%22%2C%5B%22Crafts%20%26%20Sewing%22%2C%22Lamps%22%5D%2C13.25%2C1%2C%22FairyTales%22%2C%22black-and-white%22%2C%7B%221%22%3A%22custom%20glitter%22%7D%5D%5DContents
+  of the E-commerce cart in form of two dimensional, index positioned JSON array. This is NOT an
+  assiociative array. IMPORTANT: value have to be urlencoded in raw URL, below is decoded JSON, do not
+  use it directly in raw URL. Decoded value: [
+    [
+        "craft-311",
+        "Unicorn Iron on Patch",
         "Crafts & Sewing",
-        "Lamps"
-      ],
-      13.25,
-      1,
-      "FairyTales",
-      "black-and-white",
-      {
-        "1":"custom glitter"
-      }
+        4.99,
+        3,
+        "FairyTales",
+        "3-color rainbow"
+    ],
+    [
+        "craft-312",
+        "Unicorn Lamp",
+        [
+          "Crafts & Sewing",
+          "Lamps"
+        ],
+        13.25,
+        1,
+        "FairyTales",
+        "black-and-white",
+        {
+          "1":"custom glitter"
+        }
+    ]
   ]
-]
-Each product on the list can contain:
-
-[0] sku: string (required) Stock keeping unit. Max 1024 bytes long. [1] name: string (optional) Name
-of a product. Max 1024 bytes long. [2] category: string|Array<string> (optional) Category of a
-product. Max 5 categories, each 1024 bytes long. [3] price: number (optional) Price of a product.
-Currency of this value does not matter, but only one should be used by the application (e.g. USD).
-[4] quantity: integer (optional, default to 1) Quantity of a product. [5] brand: string (optional) a
-brand of the product [6] variant: string (optional) a variant of the product [7] product custom
-dimensions: Object<string, string> a dictionary of custom dimension values, numeric string ID and a
-string with value. Max 20 product custom dimensions, 20 is max ID.
-
-Legend: [index] name: data type (requisite) Desctiption. Restrictions. E-commerce cart must not
-contain more than 100 products.
-*/
+  Each product on the list can contain:
+  
+  [0] sku: string (required) Stock keeping unit. Max 1024 bytes long. [1] name: string (optional) Name
+  of a product. Max 1024 bytes long. [2] category: string|Array<string> (optional) Category of a
+  product. Max 5 categories, each 1024 bytes long. [3] price: number (optional) Price of a product.
+  Currency of this value does not matter, but only one should be used by the application (e.g. USD).
+  [4] quantity: integer (optional, default to 1) Quantity of a product. [5] brand: string (optional) a
+  brand of the product [6] variant: string (optional) a variant of the product [7] product custom
+  dimensions: Object<string, string> a dictionary of custom dimension values, numeric string ID and a
+  string with value. Max 20 product custom dimensions, 20 is max ID.
+  
+  Legend: [index] name: data type (requisite) Desctiption. Restrictions. E-commerce cart must not
+  contain more than 100 products.
+  */
   ec_products: string;
 
   /**number  Example:  ec_st=4.99E-commerce order sub-total (order cost without shipping). Currency
-of the value does not matter, but only one should be used by the application (e.g. USD).
-*/
+  of the value does not matter, but only one should be used by the application (e.g. USD).
+  */
   ec_st: string | number;
 
   /**number  Example:  ec_tx=4.99E-commerce order tax. Currency of the value does not matter, but
-only one should be used by the application (e.g. USD).
-*/
+  only one should be used by the application (e.g. USD).
+  */
   ec_tx: string | number;
 
   /**number  Example:  ec_sh=4.99E-commerce order shipping. Currency of the value does not matter,
-but only one should be used by the application (e.g. USD).
-*/
+  but only one should be used by the application (e.g. USD).
+  */
   ec_sh: string | number;
 
   /**number  Example:  ec_dt=4.99E-commerce order discount. Currency of the value does not matter,
-but only one should be used by the application (e.g. USD).
-*/
+  but only one should be used by the application (e.g. USD).
+  */
   ec_dt: string | number;
 
   /**integer <UNIX timestamp>   Example:  _ects=1521232150Time of the last E-commerce order in UNIX
-timestamp format (number of seconds since 1970-01-01).
-   */
+  timestamp format (number of seconds since 1970-01-01).
+     */
   _ects: string;
 
   /**integer  Example:  gt_ms=264Page generation and load time in milliseconds.
@@ -317,58 +313,58 @@ timestamp format (number of seconds since 1970-01-01).
   gt_ms: string;
 
   /**string Default:  "UTF-8"  Example:  cs=ISO-8859-1Page charset. Used for decoding parameters in
-event URL.
-*/
+  event URL.
+  */
   cs: string;
 
   /**integer Default:  0 Enum: 0 1   Example:  cookie=1Status of Cookie capability in Visitor's
-browser (value "1" indicates that it is enabled).
-   */
+  browser (value "1" indicates that it is enabled).
+     */
   cookie: string;
 
   /**integer Default:  0 Enum: 0 1   Example:  fla=1Status of Flash plugin in Visitor's browser
-(value "1" indicates that it is installed).
-   */
+  (value "1" indicates that it is installed).
+     */
   fla: string;
 
   /**integer Default:  0 Enum: 0 1   Example:  java=1Status of Java plugin in Visitor's browser
-(value "1" indicates that it is installed).
-   */
+  (value "1" indicates that it is installed).
+     */
   java: string;
 
   /**integer Default:  0 Enum: 0 1   Example:  dir=1Status of Adobe Director plugin in Visitor's
-browser (value "1" indicates that it is installed).
-   */
+  browser (value "1" indicates that it is installed).
+     */
   dir: string;
 
   /**integer Enum: 0 1   Example:  qt=1Status of QuickTime plugin in Visitor's browser (value "1"
-indicates that it is installed).
-   */
+  indicates that it is installed).
+     */
   qt: string;
 
   /**integer Default:  0 Enum: 0 1   Example:  realp=1Status of RealPlayer plugin in Visitor's
-browser (value "1" indicates that it is installed).
-   */
+  browser (value "1" indicates that it is installed).
+     */
   realp: string;
 
   /**integer Default:  0 Enum: 0 1   Example:  pdf=1Status of PDF plugin in Visitor's browser (value
-"1" indicates that it is installed).
-   */
+  "1" indicates that it is installed).
+     */
   pdf: string;
 
   /**integer Default:  0 Enum: 0 1   Example:  wma=1Status of Windows Media Player plugin in
-Visitor's browser (value "1" indicates that it is installed).
-   */
+  Visitor's browser (value "1" indicates that it is installed).
+     */
   wma: string;
 
   /**integer Default:  0 Enum: 0 1   Example:  gears=1Status of (Google) Gears plugin in Visitor's
-browser (value "1" indicates that it is installed).
-   */
+  browser (value "1" indicates that it is installed).
+     */
   gears: string;
 
   /**integer Default:  0 Enum: 0 1   Example:  ag=1Status of Silverlight plugin in Visitor's browser
-(value "1" indicates that it is installed).
-   */
+  (value "1" indicates that it is installed).
+     */
   ag: string;
 
   /**string  [ 1 .. 16384 ] characters   Example:  e_c=graphCustom event category.
@@ -392,26 +388,26 @@ browser (value "1" indicates that it is installed).
   c_n: string;
 
   /**string  [ 1 .. 1024 ] characters   Example:  c_p=Unicorn%20Iron%20on%20Patch'Content piece.'
-Decoded value: Unicorn Iron on Patch
-*/
+  Decoded value: Unicorn Iron on Patch
+  */
   c_p: string;
 
   /**string  [ 1 .. 1024 ] characters   Example:
-c_t=http%3A%2F%2Fexample.com%2Fproduct%2Funicorn-iron-on-path.html'Content target.' Decoded value:
-http://example.com/product/unicorn-iron-on-path.html
-*/
+  c_t=http%3A%2F%2Fexample.com%2Fproduct%2Funicorn-iron-on-path.html'Content target.' Decoded value:
+  http://example.com/product/unicorn-iron-on-path.html
+  */
   c_t: string;
 
   /**string  [ 1 .. 1024 ] characters   Example:  c_i=show%20details'Content interaction.' Decoded
-value: show details
-*/
+  value: show details
+  */
   c_i: string;
 
   /**integer Default:  0 Enum: 0 1  Whether the server should respond with a 1 pixel GIF:
-
-0 - return text/html [No content] 1 - return image/gif [1 pixel GIF]
-
-*/
+  
+  0 - return text/html [No content] 1 - return image/gif [1 pixel GIF]
+  
+  */
   send_image: string;
 
   /**string or string  Example:  cip=172.16.254.1Override IP.
@@ -419,9 +415,9 @@ value: show details
   cip: string;
 
   /**string <UNIX timestamp|UTC DateTime<YYYY-MM-DD hh:mm:ss>>   Example:
-cdt=2018-02-24%2015%3A34%3A48Override request time. You can use it when importing HTTP logs. Decoded
-value: 2018-02-24 15:34:48
-*/
+  cdt=2018-02-24%2015%3A34%3A48Override request time. You can use it when importing HTTP logs. Decoded
+  value: 2018-02-24 15:34:48
+  */
   cdt: string;
 
   /**string <ISO 3166-1 alpha-2 code (lowercase)>   Example:  country=usOverride country.
@@ -429,8 +425,8 @@ value: 2018-02-24 15:34:48
   country: string;
 
   /**string <2 letter region code>   Example:  region=AEOverride region. Format of region codes is
-defined in MaxMind's GeoIP database.
-*/
+  defined in MaxMind's GeoIP database.
+  */
   region: string;
 
   /**string  Example:  city=New%20YorkOverride city. Decoded value: New York
@@ -446,112 +442,112 @@ defined in MaxMind's GeoIP database.
   lon: string;
 
   /**integer Default:  0 Enum: 0 1   Example:  uia=1Whether the user should be tracked anonymously.
-
-1 - all IP bytes will be masked (0.0.0.0), GeoIP data below Country level will be anonymized 0 -
-available visitor data will be added to the session
-
-*/
+  
+  1 - all IP bytes will be masked (0.0.0.0), GeoIP data below Country level will be anonymized 0 -
+  available visitor data will be added to the session
+  
+  */
   uia: string;
 
   /**integer Enum: 1 2 3 4 5 6   Example:  ping=1Indicator of a ping event. Pings update custom
-variables, custom dimensions and time metrics of the last page view. They help us determine time
-spent on a page.
-
-1 - Periodic heartbeat request (sent every X seconds) 2 - Last heartbeat (sent on page unload event)
-3 - Blur heartbeat (sent on page blur event) 4 - Request deanonymizing user 5 - Request with page
-performance metrics 6 - Request sent by the user (using ping command)
-
-*/
+  variables, custom dimensions and time metrics of the last page view. They help us determine time
+  spent on a page.
+  
+  1 - Periodic heartbeat request (sent every X seconds) 2 - Last heartbeat (sent on page unload event)
+  3 - Blur heartbeat (sent on page blur event) 4 - Request deanonymizing user 5 - Request with page
+  performance metrics 6 - Request sent by the user (using ping command)
+  
+  */
   ping: string;
 
   /**integer  [ 0 .. 65535 ]   Example:  t_us=7Unload Event Start - one of the Page Performance
-Metrics. Designed for the value of PerformanceTiming.unloadEventStart
-*/
+  Metrics. Designed for the value of PerformanceTiming.unloadEventStart
+  */
   t_us: string;
 
   /**integer  [ 0 .. 65535 ]   Example:  t_ue=7Unload Event End - one of the Page Performance
-Metrics. Designed for the value of PerformanceTiming.unloadEventEnd
-*/
+  Metrics. Designed for the value of PerformanceTiming.unloadEventEnd
+  */
   t_ue: string;
 
   /**integer  [ 0 .. 65535 ]   Example:  t_rs=7Redirect Start - one of the Page Performance Metrics.
-Designed for the value of PerformanceTiming.redirectStart
-*/
+  Designed for the value of PerformanceTiming.redirectStart
+  */
   t_rs: string;
 
   /**integer  [ 0 .. 65535 ]   Example:  t_re=7Redirect End - one of the Page Performance Metrics.
-Designed for the value of PerformanceTiming.redirectEnd
-*/
+  Designed for the value of PerformanceTiming.redirectEnd
+  */
   t_re: string;
 
   /**integer  [ 0 .. 65535 ]   Example:  t_ss=7Secure Connection Start - one of the Page Performance
-Metrics. Designed for the value of PerformanceTiming.secureConnectionStart
-*/
+  Metrics. Designed for the value of PerformanceTiming.secureConnectionStart
+  */
   t_ss: string;
 
   /**integer  [ 0 .. 65535 ]   Example:  t_fs=7Fetch Start - one of the Page Performance Metrics.
-Designed for the value of PerformanceTiming.fetchStart
-*/
+  Designed for the value of PerformanceTiming.fetchStart
+  */
   t_fs: string;
 
   /**integer  [ 0 .. 65535 ]   Example:  t_ds=7Domain Lookup Start - one of the Page Performance
-Metrics. Designed for the value of PerformanceTiming.domainLookupStart
-*/
+  Metrics. Designed for the value of PerformanceTiming.domainLookupStart
+  */
   t_ds: string;
 
   /**integer  [ 0 .. 65535 ]   Example:  t_cs=7Connect Start - one of the Page Performance Metrics.
-Designed for the value of PerformanceTiming.connectStart
-*/
+  Designed for the value of PerformanceTiming.connectStart
+  */
   t_cs: string;
 
   /**integer  [ 0 .. 65535 ]   Example:  t_ce=7Connect End - one of the Page Performance Metrics.
-Designed for the value of PerformanceTiming.connectEnd
-*/
+  Designed for the value of PerformanceTiming.connectEnd
+  */
   t_ce: string;
 
   /**integer  [ 0 .. 65535 ]   Example:  t_qs=7Request Start - one of the Page Performance Metrics.
-Designed for the value of PerformanceTiming.requestStart
-*/
+  Designed for the value of PerformanceTiming.requestStart
+  */
   t_qs: string;
 
   /**integer  [ 0 .. 65535 ]   Example:  t_as=7Response Start - one of the Page Performance Metrics.
-Designed for the value of PerformanceTiming.responseStart
-*/
+  Designed for the value of PerformanceTiming.responseStart
+  */
   t_as: string;
 
   /**integer  [ 0 .. 65535 ]   Example:  t_ae=7Response End - one of the Page Performance Metrics.
-Designed for the value of PerformanceTiming.responseEnd
-*/
+  Designed for the value of PerformanceTiming.responseEnd
+  */
   t_ae: string;
 
   /**integer  [ 0 .. 65535 ]   Example:  t_dl=7DOM Loading - one of the Page Performance Metrics.
-Designed for the value of PerformanceTiming.domLoading
-*/
+  Designed for the value of PerformanceTiming.domLoading
+  */
   t_dl: string;
 
   /**integer  [ 0 .. 16777215 ]   Example:  t_di=7DOM Interactive - one of the Page Performance
-Metrics. Designed for the value of PerformanceTiming.domInteractive
-*/
+  Metrics. Designed for the value of PerformanceTiming.domInteractive
+  */
   t_di: string;
 
   /**integer  [ 0 .. 16777215 ]   Example:  t_ls=7DOM Content Loaded Event Start - one of the Page
-Performance Metrics. Designed for the value of PerformanceTiming.domContentLoadedEventStart
-*/
+  Performance Metrics. Designed for the value of PerformanceTiming.domContentLoadedEventStart
+  */
   t_ls: string;
 
   /**integer  [ 0 .. 16777215 ]   Example:  t_le=7DOM Content Loaded Event End - one of the Page
-Performance Metrics. Designed for the value of PerformanceTiming.domContentLoadedEventEnd
-*/
+  Performance Metrics. Designed for the value of PerformanceTiming.domContentLoadedEventEnd
+  */
   t_le: string;
 
   /**integer  [ 0 .. 16777215 ]   Example:  t_dc=7DOM Complete - one of the Page Performance
-Metrics. Designed for the value of PerformanceTiming.domComplete
-*/
+  Metrics. Designed for the value of PerformanceTiming.domComplete
+  */
   t_dc: string;
 
   /**integer  [ 0 .. 16777215 ]   Example:  t_ee=7Load Event End - one of the Page Performance
-Metrics. Designed for the value of PerformanceTiming.loadEventEnd
-*/
+  Metrics. Designed for the value of PerformanceTiming.loadEventEnd
+  */
   t_ee: string;
 
   /**string  Example:  ts_n=iOs%20SDKName of a library used for tracking. Decoded value: iOs SDK
@@ -559,14 +555,14 @@ Metrics. Designed for the value of PerformanceTiming.loadEventEnd
   ts_n: string;
 
   /**string <SemVer>   Example:  ts_v=3.4.1Version of a library used for tracking. Semantic
-Versioning format required.
-   */
+  Versioning format required.
+     */
   ts_v: string;
 
   /**integer Enum: 0 1   Example:  sh=1Provides on-demand control of the SessionHash feature
-(0=disabled, 1=enabled) When this parameter is not used, processing service will default to the
-current value from the Privacy tab in global or app settings.
-*/
+  (0=disabled, 1=enabled) When this parameter is not used, processing service will default to the
+  current value from the Privacy tab in global or app settings.
+  */
   sh: 0 | 1;
 
   /**
@@ -577,124 +573,3 @@ current value from the Privacy tab in global or app settings.
    */
   rmip: 0 | 1;
 }>;
-
-export type SendPayload = TrackingData & { dimensions?: Dimensions };
-type TrackPageViewProps = {
-  title: string;
-  url: string;
-  dimensions?: Dimensions;
-  pageViewId?: string;
-};
-export type TrackerApiClient = {
-  send: (data: SendPayload) => unknown;
-  sendBatch: (data: SendPayload[]) => unknown;
-  trackPageView: (props: TrackPageViewProps) => unknown;
-  trackEvent: (props: {
-    category: string;
-    action: string;
-    name?: string;
-    value?: number;
-    dimensions?: Dimensions;
-  }) => unknown;
-  trackSiteSearch: (props: {
-    keyword: string;
-    category?: string | string[];
-    searchCount?: number;
-    dimensions?: Dimensions;
-  }) => unknown;
-  trackGoal: (props: {
-    goalId: number | string;
-    conversionValue?: number;
-    dimensions?: Dimensions;
-  }) => unknown;
-  ping: (level: PingLevel) => unknown;
-};
-
-// Tracker API responds only with two status codes:
-// 202 Request accepted waiting for processing
-// and
-// 400 Bad Request
-export function TrackerApiClient(
-  http: HttpService,
-  baseUrl: string,
-  siteId: string
-): TrackerApiClient {
-  function prepareQuery({ dimensions, ...data }: SendPayload) {
-    const query: TrackingData = {
-      idsite: siteId,
-      rec: 1,
-      ...(dimensions && mapDimensions(dimensions)),
-      ...data,
-    };
-
-    return query;
-  }
-
-  const send: TrackerApiClient['send'] = (data) => {
-    const query: TrackingData = prepareQuery(data);
-
-    http.get(baseUrl, { query });
-  };
-
-  const sendBatch: TrackerApiClient['sendBatch'] = (data) => {
-    const queryParams = data.map(prepareQuery);
-
-    http.post(baseUrl, {
-      body: { requests: queryParams.map((params) => paramsToQueryString(params)) },
-    });
-  };
-
-  return {
-    send,
-    sendBatch,
-
-    trackPageView: ({ title, url, dimensions, pageViewId }) =>
-      send({ action_name: title, url, dimensions, ...removeEmptyEntries({ pv_id: pageViewId }) }),
-
-    trackEvent: ({ action, category, dimensions, name, value }) =>
-      send({
-        e_c: category,
-        e_a: action,
-        ...removeEmptyEntries({ e_n: name, e_v: value?.toString() }),
-        dimensions,
-      }),
-
-    trackSiteSearch: ({ dimensions, keyword, category, searchCount }) =>
-      send({
-        search: keyword,
-        ...removeEmptyEntries({
-          search_cats: toArray(category),
-          search_count: searchCount,
-        }),
-        dimensions,
-      }),
-
-    trackGoal: ({ goalId, conversionValue, dimensions }) =>
-      send({
-        idgoal: goalId,
-        ...removeEmptyEntries({
-          conversionValue,
-        }),
-        dimensions,
-      }),
-
-    ping: (level) =>
-      send({
-        ping: level.toString(),
-      }),
-  };
-}
-
-type MappedDimensions = Record<`dimension${number}`, string>;
-/**
- * Maps dimensions from `{1: "value"}`
- *
- * to
- *
- * `{dimension1: "value"}`
- */
-export function mapDimensions(dimensions: Dimensions): MappedDimensions {
-  return Object.fromEntries(
-    Object.entries(dimensions).map(([id, value]) => [`dimension${id}`, value])
-  );
-}
