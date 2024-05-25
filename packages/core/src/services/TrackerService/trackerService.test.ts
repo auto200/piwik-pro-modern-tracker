@@ -1,5 +1,11 @@
 import { describe, test, vi, expect, afterEach } from 'vitest';
-import { SendPayload, mapDimensions, TrackerService, TrackerServices } from './TrackerService';
+import {
+  SendPayload,
+  mapDimensions,
+  TrackerService,
+  TrackerServices,
+  RequestProcessor,
+} from './TrackerService';
 import { HttpService } from '../HttpService';
 import { Dimensions } from '../../types';
 import { GlobalDimensions } from '../GlobalDimensions';
@@ -44,6 +50,104 @@ describe('TrackerService', () => {
         body: '{"requests":["?idsite=69420fcd-c059-4d92-8480-dde3ed465ed1&rec=1&dimension1=asd&dimension2=qwe"]}',
       })
     );
+  });
+
+  describe('request processors', () => {
+    describe('single request', () => {
+      test('adds additional params to the request', () => {
+        const processor: RequestProcessor = (payload) => ({ ...payload, java: '1' });
+        const processor2: RequestProcessor = (payload) => ({ ...payload, pdf: '1' });
+
+        tracker.addRequestProcessor(processor);
+        tracker.addRequestProcessor(processor2);
+        tracker.send({ _id: '123' });
+
+        expect(mockFetch).toBeCalledTimes(1);
+        expect(mockFetch).toBeCalledWith(expect.stringContaining('&java=1'), expect.anything());
+        expect(mockFetch).toBeCalledWith(expect.stringContaining('&pdf=1'), expect.anything());
+        expect(mockFetch).toBeCalledWith(expect.stringContaining('&_id=123'), expect.anything());
+
+        tracker.removeRequestProcessor(processor);
+        tracker.removeRequestProcessor(processor2);
+
+        tracker.send({ _id: '123' });
+
+        expect(mockFetch).toBeCalledWith(expect.not.stringContaining('&java=1'), expect.anything());
+        expect(mockFetch).toBeCalledWith(expect.not.stringContaining('&pdf=1'), expect.anything());
+        expect(mockFetch).toBeCalledWith(expect.stringContaining('&_id=123'), expect.anything());
+      });
+
+      test('cancelling request', () => {
+        const cancelingProcessor: RequestProcessor = (_payload) => undefined;
+
+        tracker.addRequestProcessor(cancelingProcessor);
+
+        tracker.send({ _id: '123' });
+
+        // request cancelled
+        expect(mockFetch).toBeCalledTimes(0);
+
+        tracker.removeRequestProcessor(cancelingProcessor);
+      });
+    });
+
+    describe('batch send', () => {
+      test('adds additional parameters to each request', () => {
+        const processor: RequestProcessor = (payload) => ({ ...payload, java: '1' });
+        const processor2: RequestProcessor = (payload) => ({ ...payload, pdf: '1' });
+
+        tracker.addRequestProcessor(processor);
+        tracker.addRequestProcessor(processor2);
+
+        tracker.sendBatch([{ _id: '123' }, { _id: 'qwe' }]);
+
+        expect(mockFetch).toBeCalledTimes(1);
+        // TODO: refactor after http service will take queries as an array and not a string
+        expect(mockFetch).toHaveBeenCalledWith(
+          BASE_URL,
+          expect.objectContaining({
+            body: expect.stringContaining('&_id=123&java=1&pdf=1'),
+          })
+        );
+        expect(mockFetch).toHaveBeenCalledWith(
+          BASE_URL,
+          expect.objectContaining({
+            body: expect.stringContaining('&_id=qwe&java=1&pdf=1'),
+          })
+        );
+        tracker.removeRequestProcessor(processor);
+        tracker.removeRequestProcessor(processor2);
+      });
+
+      test('cancels one of requests', () => {
+        const processor: RequestProcessor = (payload) => ({ ...payload, java: '1' });
+        const cancelingProcessor: RequestProcessor = (payload) =>
+          payload._id === '123' ? undefined : payload;
+
+        tracker.addRequestProcessor(processor);
+        tracker.addRequestProcessor(cancelingProcessor);
+
+        tracker.sendBatch([{ _id: '123' }, { _id: 'qwe' }]);
+
+        expect(mockFetch).toBeCalledTimes(1);
+        // TODO: refactor after http service will take queries as an array and not a string
+        expect(mockFetch).toHaveBeenCalledWith(
+          BASE_URL,
+          expect.objectContaining({
+            body: expect.stringContaining('&_id=qwe&java=1'),
+          })
+        );
+        expect(mockFetch).toHaveBeenCalledWith(
+          BASE_URL,
+          expect.objectContaining({
+            body: expect.not.stringContaining('&_id=123'),
+          })
+        );
+
+        tracker.removeRequestProcessor(processor);
+        tracker.removeRequestProcessor(cancelingProcessor);
+      });
+    });
   });
 
   describe('global dimensions', () => {

@@ -15,5 +15,4 @@ heartbeat
 error tracker
 - option to track only unique errors
 
-page view tracker
-- pv_id should be attached to every request
+encoding of sent values (in http service)

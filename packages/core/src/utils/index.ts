@@ -32,3 +32,7 @@ export enum PingLevel {
   PerformanceMetrics = 5,
   OnDemand = 6,
 }
+
+export function isNotNullable<T>(value: T | null | undefined): value is T {
+  return value !== undefined && value !== null;
+}

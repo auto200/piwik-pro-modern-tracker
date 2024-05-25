@@ -1,4 +1,4 @@
-import { Dimensions, type TrackerService } from '@pp-tracker-client/core';
+import type { Dimensions, TrackerService } from '@pp-tracker-client/core';
 
 export type PageViewsTracker = {
   trackPageView: (props?: TrackPageViewProps) => void;
@@ -18,6 +18,14 @@ export function PageViewsTracker(
   let lastTrackedPageURL = '';
   let trackedPageViews = 0;
   let idPageView = '';
+
+  tracker.addRequestProcessor((payload) => {
+    if (!('pv_id' in payload)) {
+      return { ...payload, pv_id: idPageView };
+    }
+
+    return payload;
+  });
 
   for (const method of ['pushState', 'replaceState'] as const) {
     history[method] = new Proxy(history[method], {

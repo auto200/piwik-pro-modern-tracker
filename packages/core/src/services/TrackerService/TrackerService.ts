@@ -1,4 +1,4 @@
-import { PingLevel, removeEmptyEntries, toArray } from '../../utils';
+import { PingLevel, isNotNullable, removeEmptyEntries, toArray } from '../../utils';
 import { Dimensions } from '../../types';
 import { GlobalDimensions } from '../GlobalDimensions';
 import { TrackingParameters } from './types';
@@ -43,10 +43,17 @@ export type TrackerService = {
     dimensions?: Dimensions;
   }) => unknown;
   ping: (level?: PingLevel) => unknown;
+  addRequestProcessor: (processor: RequestProcessor) => void;
+  removeRequestProcessor: (processor: RequestProcessor) => void;
 } & Pick<
   GlobalDimensions,
   'getCustomDimensionValue' | 'setCustomDimensionValue' | 'deleteCustomDimension'
 >;
+
+/**
+ * Returning undefined from processor cancels the request
+ */
+export type RequestProcessor = (payload: SendPayload) => SendPayload | undefined;
 
 export type TrackerServiceConfig = {
   baseUrl: string;
@@ -65,35 +72,47 @@ const defaultServices: TrackerServices = {
 
 export function TrackerService(
   config: TrackerServiceConfig,
-  services: TrackerServices = defaultServices
+  services: Partial<TrackerServices> = defaultServices
 ): TrackerService {
+  const { globalDimensions, http } = { ...defaultServices, ...services };
+
   const siteId = config.siteId;
   const baseUrl = config.baseUrl;
 
-  const { globalDimensions, http } = services;
+  let requestProcessors: RequestProcessor[] = [];
 
   function prepareQuery({ dimensions, ...data }: SendPayload) {
-    const query: TrackingParameters = {
+    let processedQuery: SendPayload | undefined = {
       idsite: siteId,
       rec: 1,
       ...(dimensions && mapDimensions({ ...globalDimensions.getAll(), ...dimensions })),
       ...data,
     };
 
-    return query;
+    for (const processor of requestProcessors) {
+      processedQuery = processor(processedQuery);
+
+      // cancel request
+      if (!processedQuery) return;
+    }
+
+    return processedQuery;
   }
 
-  const send: TrackerService['send'] = (data) => {
-    const query: TrackingParameters = prepareQuery(data);
+  const send: TrackerService['send'] = (payload) => {
+    const query = prepareQuery(payload);
+    if (!query) return;
 
     http.get(baseUrl, { query });
   };
 
-  const sendBatch: TrackerService['sendBatch'] = (data) => {
-    const queryParams = data.map(prepareQuery);
+  const sendBatch: TrackerService['sendBatch'] = (payloads) => {
+    const queries = payloads.map(prepareQuery).filter(isNotNullable);
+
+    if (queries.length === 0) return;
 
     http.post(baseUrl, {
-      body: { requests: queryParams.map((params) => paramsToQueryString(params)) },
+      body: { requests: queries.map(paramsToQueryString) },
     });
   };
 
@@ -136,12 +155,23 @@ export function TrackerService(
         ping: level.toString(),
       }),
 
+    // NOTE: this probably should not belong here, if someone wants to interact with global
+    // dimensions they should provide GlobalDimensions service and and operate on it directly (?)
     // dimensions
     getCustomDimensionValue: globalDimensions.getCustomDimensionValue,
 
     setCustomDimensionValue: globalDimensions.setCustomDimensionValue,
 
     deleteCustomDimension: globalDimensions.deleteCustomDimension,
+
+    // request processors
+    addRequestProcessor: (processor) => {
+      requestProcessors = [...requestProcessors, processor];
+    },
+
+    removeRequestProcessor: (processor) => {
+      requestProcessors = requestProcessors.filter((p) => p !== processor);
+    },
   };
 }
 
