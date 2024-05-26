@@ -152,24 +152,72 @@ describe('TrackerService', () => {
 
   describe('global dimensions', () => {
     test('global dimensions should be overridden by call specific ones', () => {
-      tracker.setCustomDimensionValue(1, 'aaa');
-      tracker.setCustomDimensionValue(2, 'aaa');
+      mockServices.globalDimensions.setCustomDimensionValue(1, 'aaa');
+      mockServices.globalDimensions.setCustomDimensionValue(2, 'aaa');
       tracker.send({ dimensions: { 1: 'bbb' } });
 
       calledWith('&rec=1&dimension1=bbb&dimension2=aaa');
     });
   });
 
-  describe('utils', () => {
-    test('mapping dimensions', () => {
-      const dimensions: Dimensions = { 1: 'value' };
-      const dimensions2: Dimensions = { 1: 'value', 2: 'value2' };
+  describe('encoding param values', () => {
+    test('encodes parameters for single request', () => {
+      tracker.send({ action_name: 'pasta restaurant', dimensions: { 1: 'mac & cheese' } });
 
-      const expected1 = { dimension1: 'value' };
-      const expected2 = { dimension1: 'value', dimension2: 'value2' };
-
-      expect(mapDimensions(dimensions)).toStrictEqual(expected1);
-      expect(mapDimensions(dimensions2)).toStrictEqual(expected2);
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('&action_name=pasta+restaurant'),
+        expect.anything()
+      );
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('&dimension1=mac+%26+cheese'),
+        expect.anything()
+      );
     });
+
+    test('encodes parameters for batch request', () => {
+      tracker.sendBatch([
+        { action_name: 'pasta restaurant', dimensions: { 1: 'mac & cheese' } },
+        { action_name: 'do it yourself', dimensions: { 1: 'tools & metals' } },
+      ]);
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        BASE_URL,
+        expect.objectContaining({
+          body: expect.stringContaining('&action_name=pasta+restaurant'),
+        })
+      );
+      expect(mockFetch).toHaveBeenCalledWith(
+        BASE_URL,
+        expect.objectContaining({
+          body: expect.stringContaining('&dimension1=mac+%26+cheese'),
+        })
+      );
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        BASE_URL,
+        expect.objectContaining({
+          body: expect.stringContaining('&action_name=do+it+yourself'),
+        })
+      );
+      expect(mockFetch).toHaveBeenCalledWith(
+        BASE_URL,
+        expect.objectContaining({
+          body: expect.stringContaining('&dimension1=tools+%26+metals'),
+        })
+      );
+    });
+  });
+});
+
+describe('utils', () => {
+  test('mapping dimensions', () => {
+    const dimensions: Dimensions = { 1: 'value' };
+    const dimensions2: Dimensions = { 1: 'value', 2: 'value2' };
+
+    const expected1 = { dimension1: 'value' };
+    const expected2 = { dimension1: 'value', dimension2: 'value2' };
+
+    expect(mapDimensions(dimensions)).toStrictEqual(expected1);
+    expect(mapDimensions(dimensions2)).toStrictEqual(expected2);
   });
 });

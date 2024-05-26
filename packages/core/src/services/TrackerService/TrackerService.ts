@@ -53,7 +53,7 @@ export type TrackerService = {
 /**
  * Returning undefined from processor cancels the request
  */
-export type RequestProcessor = (payload: SendPayload) => SendPayload | undefined;
+export type RequestProcessor = (payload: TrackingParameters) => TrackingParameters | undefined;
 
 export type TrackerServiceConfig = {
   baseUrl: string;
@@ -82,7 +82,7 @@ export function TrackerService(
   let requestProcessors: RequestProcessor[] = [];
 
   function prepareQuery({ dimensions, ...data }: SendPayload) {
-    let processedQuery: SendPayload | undefined = {
+    let processedQuery: TrackingParameters | undefined = {
       idsite: siteId,
       rec: 1,
       ...(dimensions && mapDimensions({ ...globalDimensions.getAll(), ...dimensions })),

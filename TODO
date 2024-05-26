@@ -14,5 +14,3 @@ heartbeat
 
 error tracker
 - option to track only unique errors
-
-encoding of sent values (in http service)
