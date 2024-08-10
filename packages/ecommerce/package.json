@@ -16,11 +16,11 @@
   "license": "ISC",
   "dependencies": {
     "@pp-tracker-client/core": "workspace:*",
-    "typescript": "5.3.3"
+    "typescript": "5.5.4"
   },
   "devDependencies": {
     "@pp-tracker-client/config": "workspace:*",
-    "vite-tsconfig-paths": "4.3.1",
-    "vitest": "1.2.2"
+    "vite-tsconfig-paths": "5.0.1",
+    "vitest": "2.0.5"
   }
 }
