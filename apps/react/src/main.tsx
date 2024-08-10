@@ -10,6 +10,11 @@ import { ContentInteraction } from '@pp-tracker-client/content-interaction';
 import { ContentImpression } from '@pp-tracker-client/content-impression';
 import { config } from './config.ts';
 
+// src/main.js or src/main.ts
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/dev-sw.js?dev-sw');
+}
+
 const tracker = TrackerService({
   baseUrl: config.VITE_TRACKER_BASE_URL,
   siteId: config.VITE_SITE_ID,

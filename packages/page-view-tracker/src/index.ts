@@ -19,6 +19,7 @@ export function PageViewsTracker(
   let trackedPageViews = 0;
   let idPageView = '';
 
+  // NOTE: not sure if this should be automatically enabled by default
   tracker.addRequestProcessor((payload) => {
     if (!('pv_id' in payload)) {
       return { ...payload, pv_id: idPageView };
@@ -27,6 +28,7 @@ export function PageViewsTracker(
     return payload;
   });
 
+  // NOTE: not sure if this should be automatically enabled by default
   for (const method of ['pushState', 'replaceState'] as const) {
     history[method] = new Proxy(history[method], {
       apply: (target, thisArg, argArray: Parameters<History[typeof method]>) => {
@@ -44,9 +46,9 @@ export function PageViewsTracker(
   }
 
   const trackPageView = (props?: TrackPageViewProps) => {
+    const { title = document.title, url = location.href, dimensions } = props || {};
     idPageView = crypto.randomUUID().substring(0, 6);
 
-    const { title = document.title, url = location.href, dimensions } = props || {};
     tracker.trackPageView({ title, url, dimensions, pageViewId: idPageView });
 
     trackedPageViews++;

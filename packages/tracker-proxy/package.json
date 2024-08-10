@@ -1,0 +1,25 @@
+{
+  "name": "@pp-tracker-client/tracker-proxy",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsc -w",
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "5.3.3"
+  },
+  "devDependencies": {
+    "@pp-tracker-client/config": "workspace:*",
+    "vite-tsconfig-paths": "4.3.1",
+    "vitest": "1.2.2"
+  }
+}
