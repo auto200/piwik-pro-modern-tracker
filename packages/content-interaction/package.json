@@ -17,12 +17,12 @@
   "dependencies": {
     "@pp-tracker-client/content-tracking-utils": "workspace:*",
     "@pp-tracker-client/core": "workspace:*",
-    "typescript": "5.3.3"
+    "typescript": "5.5.4"
   },
   "devDependencies": {
     "@pp-tracker-client/config": "workspace:*",
-    "happy-dom": "13.7.3",
-    "vite-tsconfig-paths": "4.3.1",
-    "vitest": "1.2.2"
+    "happy-dom": "14.12.3",
+    "vite-tsconfig-paths": "5.0.1",
+    "vitest": "2.0.5"
   }
 }

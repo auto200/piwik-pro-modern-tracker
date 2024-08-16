@@ -2,7 +2,7 @@
 module.exports = {
   printWidth: 100,
   singleQuote: true,
-  trailingComma: "es5",
+  trailingComma: 'es5',
   semi: true,
-  endOfLine: "lf",
+  endOfLine: 'lf',
 };
