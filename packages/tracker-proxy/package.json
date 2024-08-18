@@ -1,0 +1,32 @@
+{
+  "name": "@pp-tracker-client/tracker-proxy",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "rollup -c -w",
+    "build": "rollup -c",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@pp-tracker-client/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@pp-tracker-client/config": "workspace:*",
+    "@rollup/plugin-commonjs": "26.0.1",
+    "@rollup/plugin-node-resolve": "15.2.3",
+    "@rollup/plugin-typescript": "11.1.6",
+    "happy-dom": "14.12.3",
+    "rollup": "4.20.0",
+    "rollup-plugin-serve": "1.1.1",
+    "typescript": "5.5.4",
+    "vite-tsconfig-paths": "5.0.1",
+    "vitest": "2.0.5"
+  }
+}

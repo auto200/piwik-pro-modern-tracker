@@ -16,7 +16,7 @@ export type Product = {
   customDimensions?: Dimensions;
 };
 
-type PaymentInformation = {
+export type PaymentInformation = {
   orderId: number | string;
   grandTotal?: number | string;
   subTotal?: number | string;

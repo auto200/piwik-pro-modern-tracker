@@ -307,6 +307,43 @@ importers:
         specifier: 2.0.5
         version: 2.0.5(happy-dom@14.12.3)
 
+  packages/tracker-proxy:
+    dependencies:
+      '@pp-tracker-client/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      '@pp-tracker-client/config':
+        specifier: workspace:*
+        version: link:../config
+      '@rollup/plugin-commonjs':
+        specifier: 26.0.1
+        version: 26.0.1(rollup@4.20.0)
+      '@rollup/plugin-node-resolve':
+        specifier: 15.2.3
+        version: 15.2.3(rollup@4.20.0)
+      '@rollup/plugin-typescript':
+        specifier: 11.1.6
+        version: 11.1.6(rollup@4.20.0)(tslib@2.6.3)(typescript@5.5.4)
+      happy-dom:
+        specifier: 14.12.3
+        version: 14.12.3
+      rollup:
+        specifier: 4.20.0
+        version: 4.20.0
+      rollup-plugin-serve:
+        specifier: 1.1.1
+        version: 1.1.1
+      typescript:
+        specifier: 5.5.4
+        version: 5.5.4
+      vite-tsconfig-paths:
+        specifier: 5.0.1
+        version: 5.0.1(typescript@5.5.4)(vite@5.4.0)
+      vitest:
+        specifier: 2.0.5
+        version: 2.0.5(happy-dom@14.12.3)
+
 packages:
 
   '@aashutoshrathi/word-wrap@1.2.6':
@@ -1536,6 +1573,11 @@ packages:
     resolution: {integrity: sha512-DMy+ERcEW2q8Z2Po+WNXuw3c5YaUSFjAO5GsJqfEl7UjvtIuFKO6ZrKvcItdy98dwFI2N1tg3zNIdKaQT+aNdA==}
     engines: {node: '>=8.6'}
 
+  mime@2.6.0:
+    resolution: {integrity: sha512-USPkMeET31rOMiarsBNIHZKLGgvKc/LrjofAnBlOttf5ajRvqiRA8QsenbcooctK6d6Ts6aqZXBA+XbkKthiQg==}
+    engines: {node: '>=4.0.0'}
+    hasBin: true
+
   mimic-fn@4.0.0:
     resolution: {integrity: sha512-vqiC06CuhBTUdZH+RYl8sFrL096vA45Ok5ISO6sE/Mr1jRbGH4Csnhi8f3wKVl7x8mO4Au7Ir9D3Oyv1VYMFJw==}
     engines: {node: '>=12'}
@@ -1583,6 +1625,10 @@ packages:
   onetime@6.0.0:
     resolution: {integrity: sha512-1FlR+gjXK7X+AsAHso35MnyN5KqGwJRi/31ft6x0M194ht7S+rWAvd7PHss9xSKMzE0asv1pyIHaJYq+BbacAQ==}
     engines: {node: '>=12'}
+
+  opener@1.5.2:
+    resolution: {integrity: sha512-ur5UIdyw5Y7yEj9wLzhqXiy6GZ3Mwx0yGI+5sMn2r0N0v3cKJvUmFH5yPP+WXh9e0xfyzyJX95D8l088DNFj7A==}
+    hasBin: true
 
   optionator@0.9.3:
     resolution: {integrity: sha512-JjCoypp+jKn1ttEFExxhetCKeJt9zhAgAve5FXHixTvFDW/5aEktX9bufBKLRRMdU7bNtpLfcGu94B3cdEJgjg==}
@@ -1719,6 +1765,9 @@ packages:
     resolution: {integrity: sha512-9dkvaxAsk/xNXSJzMgFqqMCuFgt2+KsOFek3TMLfo8NCPfWpBmqwyNn5Y+NX56QUYfCtsyhF3ayiboEoUmJk/A==}
     engines: {node: 20 || >=22}
     hasBin: true
+
+  rollup-plugin-serve@1.1.1:
+    resolution: {integrity: sha512-H0VarZRtFR0lfiiC9/P8jzCDvtFf1liOX4oSdIeeYqUCKrmFA7vNiQ0rg2D+TuoP7leaa/LBR8XBts5viF6lnw==}
 
   rollup@4.13.0:
     resolution: {integrity: sha512-3YegKemjoQnYKmsBlOHfMLVPPA5xLkQ8MHLLSw/fBrFaVkEayL51DilPpNNLq1exr98F2B1TzrV0FUlN3gWRPg==}
@@ -2595,7 +2644,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/typescript-estree': 6.17.0(typescript@5.5.4)
       '@typescript-eslint/utils': 6.17.0(eslint@8.57.0)(typescript@5.5.4)
-      debug: 4.3.4
+      debug: 4.3.6
       eslint: 8.57.0
       ts-api-utils: 1.0.2(typescript@5.5.4)
     optionalDependencies:
@@ -2607,7 +2656,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/typescript-estree': 7.1.1(typescript@5.5.4)
       '@typescript-eslint/utils': 7.1.1(eslint@8.56.0)(typescript@5.5.4)
-      debug: 4.3.4
+      debug: 4.3.6
       eslint: 8.56.0
       ts-api-utils: 1.0.2(typescript@5.5.4)
     optionalDependencies:
@@ -2623,7 +2672,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 6.17.0
       '@typescript-eslint/visitor-keys': 6.17.0
-      debug: 4.3.4
+      debug: 4.3.6
       globby: 11.1.0
       is-glob: 4.0.3
       minimatch: 9.0.3
@@ -2638,7 +2687,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 7.1.1
       '@typescript-eslint/visitor-keys': 7.1.1
-      debug: 4.3.4
+      debug: 4.3.6
       globby: 11.1.0
       is-glob: 4.0.3
       minimatch: 9.0.3
@@ -3300,6 +3349,8 @@ snapshots:
       braces: 3.0.2
       picomatch: 2.3.1
 
+  mime@2.6.0: {}
+
   mimic-fn@4.0.0: {}
 
   minimatch@10.0.1:
@@ -3339,6 +3390,8 @@ snapshots:
   onetime@6.0.0:
     dependencies:
       mimic-fn: 4.0.0
+
+  opener@1.5.2: {}
 
   optionator@0.9.3:
     dependencies:
@@ -3458,6 +3511,11 @@ snapshots:
     dependencies:
       glob: 11.0.0
       package-json-from-dist: 1.0.0
+
+  rollup-plugin-serve@1.1.1:
+    dependencies:
+      mime: 2.6.0
+      opener: 1.5.2
 
   rollup@4.13.0:
     dependencies:
