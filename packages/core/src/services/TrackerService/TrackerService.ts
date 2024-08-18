@@ -95,8 +95,14 @@ export function TrackerService(
       // cancel request
       if (!processedQuery) return;
     }
+    // filter out parameters with empty values
+    const entriesWithValues = Object.fromEntries(
+      Object.entries(processedQuery)
+        .map(([key, value]) => (value === '' ? null : [key, value]))
+        .filter(isNotNullable)
+    );
 
-    return processedQuery;
+    return entriesWithValues;
   }
 
   const send: TrackerService['send'] = (payload) => {
