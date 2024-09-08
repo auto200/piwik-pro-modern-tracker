@@ -5,7 +5,7 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "rollup -c -w",
+    "dev": "cross-env IS_DEV=true rollup -c -w",
     "build": "rollup -c",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -20,6 +20,7 @@
   "devDependencies": {
     "@pp-tracker-client/config": "workspace:*",
     "@rollup/plugin-commonjs": "26.0.1",
+    "@rollup/plugin-json": "6.1.0",
     "@rollup/plugin-node-resolve": "15.2.3",
     "@rollup/plugin-typescript": "11.1.6",
     "happy-dom": "14.12.3",

@@ -3,6 +3,7 @@ import { Dimensions } from '../../types';
 import { GlobalDimensions } from '../GlobalDimensions';
 import { TrackingParameters } from './types';
 import { HttpService, paramsToQueryString } from '../HttpService';
+import { version } from '../../../package.json';
 
 export type SendPayload = TrackingParameters & {
   /**
@@ -45,6 +46,10 @@ export type TrackerService = {
   ping: (level?: PingLevel) => unknown;
   addRequestProcessor: (processor: RequestProcessor) => void;
   removeRequestProcessor: (processor: RequestProcessor) => void;
+  //config
+  setTrackerUrl: (url: string) => void;
+  setSiteId: (siteId: string) => void;
+  setTrackingSource: (source: [name: string, version?: string]) => void;
 } & Pick<
   GlobalDimensions,
   'getCustomDimensionValue' | 'setCustomDimensionValue' | 'deleteCustomDimension'
@@ -76,8 +81,10 @@ export function TrackerService(
 ): TrackerService {
   const { globalDimensions, http } = { ...defaultServices, ...services };
 
-  const siteId = config.siteId;
-  const baseUrl = config.baseUrl;
+  let siteId = config.siteId;
+  let baseUrl = config.baseUrl;
+  let trackingSourceName = 'modern JSTC';
+  let trackingSourceVersion = version;
 
   let requestProcessors: RequestProcessor[] = [];
 
@@ -177,6 +184,22 @@ export function TrackerService(
 
     removeRequestProcessor: (processor) => {
       requestProcessors = requestProcessors.filter((p) => p !== processor);
+    },
+    // config
+    setTrackerUrl: (newTrackerUrl) => {
+      baseUrl = newTrackerUrl;
+    },
+
+    setSiteId: (newSiteId) => {
+      siteId = newSiteId;
+    },
+
+    setTrackingSource: ([name, version]) => {
+      trackingSourceName = name;
+
+      if (version) {
+        trackingSourceVersion = version;
+      }
     },
   };
 }

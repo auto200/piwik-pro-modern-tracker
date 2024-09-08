@@ -4,6 +4,10 @@
   "description": "",
   "type": "module",
   "main": "dist/index.js",
+  "exports": {
+    "types": "./dist/src/index.d.ts",
+    "default": "./dist/src/index.js"
+  },
   "scripts": {
     "dev": "tsc -w",
     "build": "tsc",
