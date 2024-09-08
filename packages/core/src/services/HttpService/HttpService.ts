@@ -13,7 +13,7 @@ export function HttpService(fetcher: typeof fetch = fetch) {
     const response = await fetcher(attachQueryToUrl(url, query), {
       ...params,
       body: formatBody(body),
-      headers: extendHeaders(headers, body),
+      headers: extendHeaders(headers),
     });
 
     if (response.status !== 202) {
@@ -64,7 +64,7 @@ function formatBody(body: PayloadBody): RequestInit['body'] {
   return body;
 }
 
-function extendHeaders(headers: RequestInit['headers'], body: PayloadBody): RequestInit['headers'] {
+function extendHeaders(headers: RequestInit['headers']): RequestInit['headers'] {
   return {
     'Content-Type': 'application/x-www-form-urlencoded',
     ...headers,
