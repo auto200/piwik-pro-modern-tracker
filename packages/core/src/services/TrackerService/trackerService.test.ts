@@ -22,7 +22,7 @@ const mockServices: TrackerServices = {
 const tracker = TrackerService({ baseUrl: BASE_URL, siteId: SITE_ID }, mockServices);
 
 afterEach(() => {
-  mockFetch.mockClear();
+  vi.clearAllMocks();
   mockServices.globalDimensions.clearAll();
 });
 

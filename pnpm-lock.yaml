@@ -32,6 +32,9 @@ importers:
       '@pp-tracker-client/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@pp-tracker-client/heartbeat':
+        specifier: workspace:*
+        version: link:../../packages/heartbeat
       '@pp-tracker-client/outlink-tracker':
         specifier: workspace:*
         version: link:../../packages/outlink-tracker
@@ -262,6 +265,28 @@ importers:
       typescript:
         specifier: 5.5.4
         version: 5.5.4
+      vite-tsconfig-paths:
+        specifier: 5.0.1
+        version: 5.0.1(typescript@5.5.4)(vite@5.4.0)
+      vitest:
+        specifier: 2.0.5
+        version: 2.0.5(happy-dom@14.12.3)
+
+  packages/heartbeat:
+    dependencies:
+      '@pp-tracker-client/core':
+        specifier: workspace:*
+        version: link:../core
+      typescript:
+        specifier: 5.5.4
+        version: 5.5.4
+    devDependencies:
+      '@pp-tracker-client/config':
+        specifier: workspace:*
+        version: link:../config
+      happy-dom:
+        specifier: 14.12.3
+        version: 14.12.3
       vite-tsconfig-paths:
         specifier: 5.0.1
         version: 5.0.1(typescript@5.5.4)(vite@5.4.0)
@@ -665,9 +690,6 @@ packages:
   '@jridgewell/set-array@1.2.1':
     resolution: {integrity: sha512-R8gLRTZeyp03ymzP/6Lil/28tGeGEzhx1q2k703KGWRAI1VdvPIXdG70VJc2pAMw3NA6JKL5hhFu1sJX0Mnn/A==}
     engines: {node: '>=6.0.0'}
-
-  '@jridgewell/sourcemap-codec@1.4.15':
-    resolution: {integrity: sha512-eF2rxCRulEKXHTRiDrDy6erMYWqNw4LPdQ8UQA4huuxaQsVeRPFl2oM8oDGxMFhJUWZf9McpLtJasDDZb/Bpeg==}
 
   '@jridgewell/sourcemap-codec@1.5.0':
     resolution: {integrity: sha512-gv3ZRaISU3fjPAgNsriBRqGWQL6quFx04YMPW/zD8XMLsU32mhCCbfbO6KZFLjvYpCZ8zyDEgqsgf+PwPaM7GQ==}
@@ -2336,7 +2358,7 @@ snapshots:
   '@eslint/eslintrc@2.1.4':
     dependencies:
       ajv: 6.12.6
-      debug: 4.3.4
+      debug: 4.3.6
       espree: 9.6.1
       globals: 13.24.0
       ignore: 5.3.0
@@ -2354,7 +2376,7 @@ snapshots:
   '@humanwhocodes/config-array@0.11.13':
     dependencies:
       '@humanwhocodes/object-schema': 2.0.1
-      debug: 4.3.4
+      debug: 4.3.6
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -2385,21 +2407,19 @@ snapshots:
   '@jridgewell/gen-mapping@0.3.5':
     dependencies:
       '@jridgewell/set-array': 1.2.1
-      '@jridgewell/sourcemap-codec': 1.4.15
+      '@jridgewell/sourcemap-codec': 1.5.0
       '@jridgewell/trace-mapping': 0.3.25
 
   '@jridgewell/resolve-uri@3.1.2': {}
 
   '@jridgewell/set-array@1.2.1': {}
 
-  '@jridgewell/sourcemap-codec@1.4.15': {}
-
   '@jridgewell/sourcemap-codec@1.5.0': {}
 
   '@jridgewell/trace-mapping@0.3.25':
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
-      '@jridgewell/sourcemap-codec': 1.4.15
+      '@jridgewell/sourcemap-codec': 1.5.0
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
