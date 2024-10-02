@@ -3,17 +3,21 @@ import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
 import { createBrowserRouter, RouterProvider, Link } from 'react-router-dom';
-// import { TrackerService } from '@pp-tracker-client/core';
+import { TrackerService } from '@pp-tracker-client/core';
+import { HeartBeat } from '@pp-tracker-client/heartbeat';
 // import { PageViewsTracker } from '@pp-tracker-client/page-view-tracker';
 // import { OutlinkTracker } from '@pp-tracker-client/outlink-tracker';
 // import { ContentInteraction } from '@pp-tracker-client/content-interaction';
 // import { ContentImpression } from '@pp-tracker-client/content-impression';
-// import { config } from './config.ts';
+import { config } from './config.ts';
 
-// const tracker = TrackerService({
-//   baseUrl: config.VITE_TRACKER_BASE_URL,
-//   siteId: config.VITE_SITE_ID,
-// });
+const tracker = TrackerService({
+  baseUrl: config.VITE_TRACKER_BASE_URL,
+  siteId: config.VITE_SITE_ID,
+});
+const hb = HeartBeat(tracker);
+hb.enable([5, 5, 5, 5, 5, 5, 5, 5]);
+
 // const pageViewsTracker = PageViewsTracker(tracker);
 // const outlinkTracker = OutlinkTracker(tracker);
 // const contentInteraction = ContentInteraction(tracker);

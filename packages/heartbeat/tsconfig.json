@@ -1,0 +1,21 @@
+{
+  "extends": "@pp-tracker-client/config/tsconfig/base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "baseUrl": "./src",
+    // TODO: enable path aliasing, currently for this to work in external packages, it would require
+    // additional tool or bundler to resolve aliased paths  
+    // "paths": {
+    //   "@/*": [
+    //     "./*"
+    //   ],
+    // },
+  },
+  "exclude": [
+    "node_modules",
+    "src/**/*.test.ts",
+  ],
+  "include": [
+    "src/**/*"
+  ]
+}
