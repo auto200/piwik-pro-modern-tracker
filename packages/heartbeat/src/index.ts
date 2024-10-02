@@ -10,9 +10,11 @@ export type HeartBeat = {
 
 export function HeartBeat(tracker: TrackerService): HeartBeat {
   let isEnabled = false;
+  // timer could be paused due to tab switch
+  let isPaused = false;
 
   // default to true, since we want to ignore the first 'focus' event
-  let isWindowInFocused = true;
+  let isWindowInFocus = true;
   let timings: number[] = DEFAULT_TIMINGS;
   let timeoutId: number | undefined;
   let currentBeat = 0;
@@ -25,7 +27,7 @@ export function HeartBeat(tracker: TrackerService): HeartBeat {
     }
 
     timeoutId = setTimeout(() => {
-      if (isWindowInFocused) {
+      if (isWindowInFocus) {
         tracker.ping(PingLevel.PeriodicHeartbeat);
       }
 
@@ -36,18 +38,22 @@ export function HeartBeat(tracker: TrackerService): HeartBeat {
   };
 
   const onFocus = () => {
+    if (isPaused) {
+      heartBeatTimerUp();
+      isPaused = false;
+    }
     console.log('focusing');
-    if (isWindowInFocused) {
+    if (isWindowInFocus) {
       return;
     }
 
-    isWindowInFocused = true;
+    isWindowInFocus = true;
     tracker.ping(PingLevel.PeriodicHeartbeat);
   };
 
   const onBlur = () => {
     console.log('blurring');
-    isWindowInFocused = false;
+    isWindowInFocus = false;
     tracker.ping(PingLevel.BlurHeartbeat);
   };
 
@@ -59,7 +65,12 @@ export function HeartBeat(tracker: TrackerService): HeartBeat {
       window.addEventListener('focus', onFocus);
       window.addEventListener('blur', onBlur);
 
-      heartBeatTimerUp();
+      if (document.hasFocus()) {
+        heartBeatTimerUp();
+        return;
+      }
+
+      isPaused = true;
     },
 
     disable: () => {
