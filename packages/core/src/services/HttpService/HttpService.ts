@@ -3,14 +3,13 @@ type PayloadBody = RequestInit['body'] | object;
 
 export type RequestParams = Omit<RequestInit, 'body'> & {
   body?: PayloadBody;
-  query?: QueryParams;
 };
 
 export function HttpService(fetcher: typeof fetch = fetch) {
   async function request(url: string, params: RequestParams) {
-    const { body, headers, query } = params;
+    const { body, headers } = params;
 
-    const response = await fetcher(attachQueryToUrl(url, query), {
+    const response = await fetcher(url, {
       ...params,
       body: formatBody(body),
       headers: extendHeaders(headers),
@@ -22,20 +21,11 @@ export function HttpService(fetcher: typeof fetch = fetch) {
   }
 
   return {
-    get: (url: string, params: RequestParams) =>
-      request(url, { keepalive: true, ...params, method: 'GET' }),
-
     post: (url: string, params: RequestParams) =>
       request(url, { keepalive: true, ...params, method: 'POST' }),
   };
 }
 export type HttpService = ReturnType<typeof HttpService>;
-
-function attachQueryToUrl(url: string, query?: QueryParams): string {
-  if (!query) return url;
-
-  return `${url}${paramsToQueryString(query)}`;
-}
 
 export function paramsToQueryString(params: QueryParams) {
   if (Object.keys(params).length === 0) return '';

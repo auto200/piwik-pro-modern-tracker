@@ -116,7 +116,7 @@ export function TrackerService(
     const query = prepareQuery(payload);
     if (!query) return;
 
-    http.get(baseUrl, { query });
+    http.post(baseUrl, { body: paramsToQueryString(query) });
   };
 
   const sendBatch: TrackerService['sendBatch'] = (payloads) => {

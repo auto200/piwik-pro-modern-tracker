@@ -1,4 +1,4 @@
-import { describe, expect, test, vi, beforeEach, afterEach } from 'vitest';
+import { describe, expect, test, vi, beforeEach } from 'vitest';
 import { HttpService } from '.';
 
 describe('HttpService', () => {
@@ -7,29 +7,18 @@ describe('HttpService', () => {
 
   const httpService = HttpService(mockFetch);
 
-  function calledWith(params: string) {
-    expect(mockFetch).toHaveBeenCalledWith(params, expect.anything());
-  }
-
   beforeEach(() => {
     mockFetch.mockClear();
   });
 
-  describe('encoding get requests', () => {
-    test('simple params', async () => {
-      const params = { prop: 1, prop1: 'asd' };
+  test('passes body to fetch', async () => {
+    const params = { prop: 'x+d', prop1: 'asd asd' };
 
-      httpService.get('', { query: params });
+    httpService.post('https://example.com', { body: params });
 
-      calledWith('?prop=1&prop1=asd');
-    });
-
-    test('params with special characters', async () => {
-      const params = { prop: 'x+d', prop1: 'asd asd' };
-
-      httpService.get('', { query: params });
-
-      calledWith('?prop=x%2Bd&prop1=asd+asd');
-    });
+    expect(mockFetch).toBeCalledWith(
+      'https://example.com',
+      expect.objectContaining({ body: JSON.stringify(params) })
+    );
   });
 });

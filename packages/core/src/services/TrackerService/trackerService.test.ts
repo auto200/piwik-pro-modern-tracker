@@ -1,4 +1,4 @@
-import { describe, test, vi, expect, afterEach } from 'vitest';
+import { describe, test, vi, expect, afterEach, beforeEach } from 'vitest';
 import {
   SendPayload,
   mapDimensions,
@@ -13,43 +13,51 @@ import { GlobalDimensions } from '../GlobalDimensions';
 const BASE_URL = 'http://test.piwik.pro';
 const SITE_ID = '69420fcd-c059-4d92-8480-dde3ed465ed1';
 
-const mockFetch = vi.fn();
-mockFetch.mockResolvedValue({ status: 202 });
-const mockServices: TrackerServices = {
-  globalDimensions: GlobalDimensions(),
-  http: HttpService(mockFetch),
-};
-const tracker = TrackerService({ baseUrl: BASE_URL, siteId: SITE_ID }, mockServices);
+let mockHttp: HttpService;
+let globalDimensions: GlobalDimensions;
+let tracker: TrackerService;
 
-afterEach(() => {
-  mockFetch.mockClear();
-  mockServices.globalDimensions.clearAll();
+beforeEach(() => {
+  mockHttp = {
+    post: vi.fn(),
+  };
+  globalDimensions = GlobalDimensions();
+  const mockServices: TrackerServices = {
+    globalDimensions,
+    http: mockHttp,
+  };
+  tracker = TrackerService({ baseUrl: BASE_URL, siteId: SITE_ID }, mockServices);
 });
 
-function calledWith(params: string) {
-  expect(mockFetch).toHaveBeenCalledWith(
-    `${BASE_URL}?idsite=${SITE_ID}${params}`,
-    expect.anything()
-  );
-}
+afterEach(() => {
+  vi.clearAllMocks();
+});
 
 describe('TrackerService', () => {
-  test('sending get request', () => {
+  test('sending single request', () => {
     const payload: SendPayload = { rec: 1, dimensions: { 1: 'asd', 2: 'qwe' } };
     tracker.send(payload);
-    calledWith('&rec=1&dimension1=asd&dimension2=qwe');
+
+    // TODO: we need to introduce some layer in between current TrackerService and HttpService so we
+    // can test against actual objects and don't worry about parsing it to a string in tests. The
+    // new 'TrackerHttpService' will be responsible for correctly parsing the objects into query
+    // parameters for both single and batch requests.
+    expect(mockHttp.post).toHaveBeenCalledWith(BASE_URL, {
+      body: expect.stringContaining('&rec=1&dimension1=asd&dimension2=qwe'),
+    });
   });
 
-  test('sending post request', () => {
+  test('sending batch request', () => {
     const payload: SendPayload[] = [{ rec: 1, dimensions: { 1: 'asd', 2: 'qwe' } }];
     tracker.sendBatch(payload);
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      BASE_URL,
-      expect.objectContaining({
-        body: '{"requests":["?idsite=69420fcd-c059-4d92-8480-dde3ed465ed1&rec=1&dimension1=asd&dimension2=qwe"]}',
-      })
-    );
+    expect(mockHttp.post).toHaveBeenCalledWith(BASE_URL, {
+      body: {
+        requests: [
+          '?idsite=69420fcd-c059-4d92-8480-dde3ed465ed1&rec=1&dimension1=asd&dimension2=qwe',
+        ],
+      },
+    });
   });
 
   describe('request processors', () => {
@@ -62,19 +70,29 @@ describe('TrackerService', () => {
         tracker.addRequestProcessor(processor2);
         tracker.send({ _id: '123' });
 
-        expect(mockFetch).toBeCalledTimes(1);
-        expect(mockFetch).toBeCalledWith(expect.stringContaining('&java=1'), expect.anything());
-        expect(mockFetch).toBeCalledWith(expect.stringContaining('&pdf=1'), expect.anything());
-        expect(mockFetch).toBeCalledWith(expect.stringContaining('&_id=123'), expect.anything());
+        expect(mockHttp.post).toBeCalledTimes(1);
+        expect(mockHttp.post).toBeCalledWith(BASE_URL, {
+          body: expect.stringContaining('&java=1'),
+        });
+        expect(mockHttp.post).toBeCalledWith(BASE_URL, { body: expect.stringContaining('&pdf=1') });
+        expect(mockHttp.post).toBeCalledWith(BASE_URL, {
+          body: expect.stringContaining('&_id=123'),
+        });
 
         tracker.removeRequestProcessor(processor);
         tracker.removeRequestProcessor(processor2);
 
         tracker.send({ _id: '123' });
 
-        expect(mockFetch).toBeCalledWith(expect.not.stringContaining('&java=1'), expect.anything());
-        expect(mockFetch).toBeCalledWith(expect.not.stringContaining('&pdf=1'), expect.anything());
-        expect(mockFetch).toBeCalledWith(expect.stringContaining('&_id=123'), expect.anything());
+        expect(mockHttp.post).toBeCalledWith(BASE_URL, {
+          body: expect.not.stringContaining('&java=1'),
+        });
+        expect(mockHttp.post).toBeCalledWith(BASE_URL, {
+          body: expect.not.stringContaining('&pdf=1'),
+        });
+        expect(mockHttp.post).toBeCalledWith(BASE_URL, {
+          body: expect.stringContaining('&_id=123'),
+        });
       });
 
       test('cancelling request', () => {
@@ -85,7 +103,7 @@ describe('TrackerService', () => {
         tracker.send({ _id: '123' });
 
         // request cancelled
-        expect(mockFetch).toBeCalledTimes(0);
+        expect(mockHttp.post).toBeCalledTimes(0);
 
         tracker.removeRequestProcessor(cancelingProcessor);
       });
@@ -101,20 +119,16 @@ describe('TrackerService', () => {
 
         tracker.sendBatch([{ _id: '123' }, { _id: 'qwe' }]);
 
-        expect(mockFetch).toBeCalledTimes(1);
+        expect(mockHttp.post).toBeCalledTimes(1);
         // TODO: refactor after http service will take queries as an array and not a string
-        expect(mockFetch).toHaveBeenCalledWith(
-          BASE_URL,
-          expect.objectContaining({
-            body: expect.stringContaining('&_id=123&java=1&pdf=1'),
-          })
-        );
-        expect(mockFetch).toHaveBeenCalledWith(
-          BASE_URL,
-          expect.objectContaining({
-            body: expect.stringContaining('&_id=qwe&java=1&pdf=1'),
-          })
-        );
+        expect(mockHttp.post).toHaveBeenCalledWith(BASE_URL, {
+          body: {
+            requests: [
+              expect.stringContaining('&_id=123&java=1&pdf=1'),
+              expect.stringContaining('&_id=qwe&java=1&pdf=1'),
+            ],
+          },
+        });
         tracker.removeRequestProcessor(processor);
         tracker.removeRequestProcessor(processor2);
       });
@@ -129,20 +143,14 @@ describe('TrackerService', () => {
 
         tracker.sendBatch([{ _id: '123' }, { _id: 'qwe' }]);
 
-        expect(mockFetch).toBeCalledTimes(1);
+        expect(mockHttp.post).toBeCalledTimes(1);
         // TODO: refactor after http service will take queries as an array and not a string
-        expect(mockFetch).toHaveBeenCalledWith(
-          BASE_URL,
-          expect.objectContaining({
-            body: expect.stringContaining('&_id=qwe&java=1'),
-          })
-        );
-        expect(mockFetch).toHaveBeenCalledWith(
-          BASE_URL,
-          expect.objectContaining({
-            body: expect.not.stringContaining('&_id=123'),
-          })
-        );
+        expect(mockHttp.post).toHaveBeenCalledWith(BASE_URL, {
+          body: { requests: [expect.stringContaining('&_id=qwe&java=1')] },
+        });
+        expect(mockHttp.post).toHaveBeenCalledWith(BASE_URL, {
+          body: expect.not.stringContaining('&_id=123'),
+        });
 
         tracker.removeRequestProcessor(processor);
         tracker.removeRequestProcessor(cancelingProcessor);
@@ -152,11 +160,13 @@ describe('TrackerService', () => {
 
   describe('global dimensions', () => {
     test('global dimensions should be overridden by call specific ones', () => {
-      mockServices.globalDimensions.setCustomDimensionValue(1, 'aaa');
-      mockServices.globalDimensions.setCustomDimensionValue(2, 'aaa');
+      globalDimensions.setCustomDimensionValue(1, 'aaa');
+      globalDimensions.setCustomDimensionValue(2, 'aaa');
       tracker.send({ dimensions: { 1: 'bbb' } });
 
-      calledWith('&rec=1&dimension1=bbb&dimension2=aaa');
+      expect(mockHttp.post).toHaveBeenCalledWith(BASE_URL, {
+        body: expect.stringContaining('&rec=1&dimension1=bbb&dimension2=aaa'),
+      });
     });
   });
 
@@ -164,14 +174,12 @@ describe('TrackerService', () => {
     test('encodes parameters for single request', () => {
       tracker.send({ action_name: 'pasta restaurant', dimensions: { 1: 'mac & cheese' } });
 
-      expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('&action_name=pasta+restaurant'),
-        expect.anything()
-      );
-      expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('&dimension1=mac+%26+cheese'),
-        expect.anything()
-      );
+      expect(mockHttp.post).toHaveBeenCalledWith(BASE_URL, {
+        body: expect.stringContaining('action_name=pasta+restaurant'),
+      });
+      expect(mockHttp.post).toHaveBeenCalledWith(BASE_URL, {
+        body: expect.stringContaining('dimension1=mac+%26+cheese'),
+      });
     });
 
     test('encodes parameters for batch request', () => {
@@ -180,31 +188,14 @@ describe('TrackerService', () => {
         { action_name: 'do it yourself', dimensions: { 1: 'tools & metals' } },
       ]);
 
-      expect(mockFetch).toHaveBeenCalledWith(
-        BASE_URL,
-        expect.objectContaining({
-          body: expect.stringContaining('&action_name=pasta+restaurant'),
-        })
-      );
-      expect(mockFetch).toHaveBeenCalledWith(
-        BASE_URL,
-        expect.objectContaining({
-          body: expect.stringContaining('&dimension1=mac+%26+cheese'),
-        })
-      );
-
-      expect(mockFetch).toHaveBeenCalledWith(
-        BASE_URL,
-        expect.objectContaining({
-          body: expect.stringContaining('&action_name=do+it+yourself'),
-        })
-      );
-      expect(mockFetch).toHaveBeenCalledWith(
-        BASE_URL,
-        expect.objectContaining({
-          body: expect.stringContaining('&dimension1=tools+%26+metals'),
-        })
-      );
+      expect(mockHttp.post).toHaveBeenCalledWith(BASE_URL, {
+        body: {
+          requests: [
+            '?idsite=69420fcd-c059-4d92-8480-dde3ed465ed1&rec=1&dimension1=mac+%26+cheese&action_name=pasta+restaurant',
+            '?idsite=69420fcd-c059-4d92-8480-dde3ed465ed1&rec=1&dimension1=tools+%26+metals&action_name=do+it+yourself',
+          ],
+        },
+      });
     });
   });
 });
